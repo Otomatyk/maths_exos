@@ -1,7 +1,7 @@
 import gleeunit
 import gleeunit/should.{equal}
-import expr.{Multiplication, Number, Var}
-import eval.{simplify}
+import expr/expr.{Multiplication, Number, Var}
+import expr/eval.{simplify}
 
 pub fn main() {
   gleeunit.main()

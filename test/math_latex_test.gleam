@@ -1,6 +1,6 @@
 import gleeunit
 import gleeunit/should.{equal}
-import expr.{Addition, Exponenation, Multiplication, Number, Var}
+import expr/expr.{Addition, Exponenation, Multiplication, Number, Var}
 import latex/latex
 
 pub fn main() {

@@ -1,7 +1,5 @@
 import exercices/develop
-import gleam/io
 import latex/latex
-import expr
 import simplifile
 
 pub fn main() {

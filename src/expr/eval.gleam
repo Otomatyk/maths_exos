@@ -1,5 +1,5 @@
 import gleam/list
-import expr.{type Expr, Number}
+import expr/expr.{type Expr, Number}
 
 fn return_if(condition: Bool, return: a, otherwise: fn() -> a) -> a {
   case condition {

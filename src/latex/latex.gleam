@@ -2,7 +2,7 @@ import gleam/list
 import gleam/string
 import latex/latex_expr
 import latex/latex_exercice_sheet
-import expr
+import expr/expr
 import exercice
 
 /// Generate the latex code of an expression, wrapped with `$`

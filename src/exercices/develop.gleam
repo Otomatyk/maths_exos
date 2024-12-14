@@ -1,8 +1,8 @@
 import gleam/int
 import gleam/list
 import latex/latex
-import expr.{multiply}
-import eval.{simplify}
+import expr/expr.{multiply}
+import expr/eval.{simplify}
 import exercice
 
 fn random_number() -> Int {

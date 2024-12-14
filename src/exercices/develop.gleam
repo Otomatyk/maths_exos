@@ -6,7 +6,7 @@ import eval.{simplify}
 import exercice
 
 fn random_number() -> Int {
-  int.random(10) 
+  int.random(10)
 }
 
 pub fn generate_one_exerice() -> exercice.Question {

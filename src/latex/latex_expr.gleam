@@ -85,7 +85,7 @@ fn put_parenthesis_if(s: String, when: Bool) -> String {
 // }
 
 fn factors_to_string_and_stack(
-  factors: List(Expr),
+  factors: expr.Factors,
   next_id: Int,
   parent_order: Int,
 ) -> #(String, List(StackElement)) {

@@ -8,7 +8,7 @@ fn return_if(condition: Bool, return: a, otherwise: fn() -> a) -> a {
   }
 }
 
-fn simplify_vars(factors: List(Expr), acc: List(Expr)) -> List(Expr) {
+fn simplify_vars(factors: expr.Factors, acc: List(Expr)) -> expr.Factors {
   case list.first(factors) {
     Ok(curr) -> {
       case curr {
@@ -38,7 +38,7 @@ fn simplify_vars(factors: List(Expr), acc: List(Expr)) -> List(Expr) {
   }
 }
 
-fn simplify_multiplication(factors: List(Expr)) -> Expr {
+fn simplify_multiplication(factors: expr.Factors) -> Expr {
   use <- return_if(list.contains(factors, Number(0)), Number(0))
 
   let without_numbers = simplify_vars(factors, [])
@@ -65,6 +65,10 @@ fn simplify_multiplication(factors: List(Expr)) -> Expr {
     }
     Error(_) -> number_product
   }
+}
+
+pub fn develop(factors: expr.Factors) -> expr.Terms { 
+
 }
 
 pub fn simplify(expr: Expr) -> Expr {

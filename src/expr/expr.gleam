@@ -7,12 +7,15 @@ pub type Instr {
   InstrExpr(Expr)
 }
 
+pub type Factors = List(Expr)
+pub type Terms = List(Expr)
+
 pub type Expr {
   /// Intern value used for expression compilation, it can be simply ignored since it shouldn't be used anywhere else 
   UsedExpr(op: Instr)
 
-  Addition(terms: List(Expr))
-  Multiplication(factors: List(Expr))
+  Addition(terms: Terms)
+  Multiplication(factors: Factors)
   Exponenation(base: Expr, exp: Expr)
   Var(String)
   Number(Int)

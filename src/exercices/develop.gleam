@@ -6,38 +6,58 @@ import eval.{simplify}
 import exercice
 
 fn random_number() -> Int {
-  int.random(10)
+  let n = int.random(21) - 10
+
+  case n {
+    0 -> random_number()
+    _ -> n
+  }
 }
 
-pub fn generate_one_exerice() -> exercice.Question {
-  let a_ = random_number()
-  let a = expr.Multiplication([expr.Var("x"), expr.Number(a_)])
+fn generate_one_exerice() -> exercice.Question {
+  let generate = fn() {
+    let n = random_number()
+    case n {
+      1 -> #(1, expr.Var("x"))
+      _ -> #(n, expr.Multiplication([expr.Var("x"), expr.Number(n)]))
+    }
+  }
+
+  let #(x_factor_1, a) = generate()
   let b = random_number()
-  let c_ = random_number()
-  let c = expr.Multiplication([expr.Var("x"), expr.Number(c_)])
+  let #(x_factor_2, c) = generate()
   let d = random_number()
 
-  let step0 =
+  let prompt =
     expr.Multiplication([
-      expr.Addition([a, expr.Number(b)]),
-      expr.Addition([c, expr.Number(d)]),
+      expr.Addition(
+        [a, expr.Number(b)]
+        |> list.shuffle(),
+      ),
+      expr.Addition(
+        [c, expr.Number(d)]
+        |> list.shuffle(),
+      ),
     ])
 
   let solution =
     expr.Addition([
       simplify(multiply(a, c)),
-      simplify(multiply(expr.Var("x"), expr.Number(a_ * d + b * c_))),
+      simplify(multiply(
+        expr.Var("x"),
+        expr.Number(x_factor_1 * d + b * x_factor_2),
+      )),
       simplify(multiply(expr.Number(b), expr.Number(d))),
     ])
 
   exercice.Question(
-    prompt: latex.from_expr(step0),
+    prompt: latex.from_expr(prompt),
     solution: latex.from_expr(solution),
   )
 }
 
 pub fn generate() -> exercice.ExerciceSheet {
-  let jaaj =
+  let exercices =
     list.range(0, 2)
     |> list.map(fn(_) {
       exercice.Exercice(
@@ -47,5 +67,5 @@ pub fn generate() -> exercice.ExerciceSheet {
       )
     })
 
-  exercice.ExerciceSheet(title: "Developpement", exercices: jaaj)
+  exercice.ExerciceSheet(exercices, title: "Developpement")
 }

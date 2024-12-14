@@ -27,7 +27,12 @@ type StackElement =
   #(Expr, Int, Int)
 
 pub fn generate(expr: Expr) -> String {
-  "$" <> latex(placeholder(0), [#(expr, 0, new_context_priority)], 1) <> "$"
+  "$"
+  <> {
+    latex(placeholder(0), [#(expr, 0, new_context_priority)], 1)
+    |> string.replace(each: "+ -", with: "-")
+  }
+  <> "$"
 }
 
 fn placeholder(id: Int) -> String {
@@ -73,7 +78,7 @@ fn put_parenthesis_if(s: String, when: Bool) -> String {
 //   }
 
 // fn factors_to_string_and_stack_(factors: List(Expr), next_id: Int, parent_order: Int) -> #(String, List(StackElement)) {
-  
+
 //   let impl = 
 
 //   impl(factors, acc)
@@ -110,14 +115,13 @@ fn factors_to_string_and_stack(
       }
     }
     _ -> {
-      let result =
-        numbers
-        |> placeholder_list(next_id)
-        |> string.join(" \\times ")
-        |> string.append(case non_numbers_part {
-          "" -> ""
-          _ -> " \\times " <> non_numbers_part
-        })
+      numbers
+      |> placeholder_list(next_id)
+      |> string.join(" \\times ")
+      |> string.append(case non_numbers_part {
+        "" -> ""
+        _ -> " \\times " <> non_numbers_part
+      })
     }
   }
 
@@ -160,11 +164,19 @@ fn latex(compiled: String, stack: List(StackElement), next_id: Int) -> String {
         }
 
         expr.Multiplication(factors) -> {
-          let #(result, stack) =
-            factors_to_string_and_stack(factors, next_id, multiplication_priority)
+          let #(result, stack_to_add) =
+            factors_to_string_and_stack(
+              factors,
+              next_id,
+              multiplication_priority,
+            )
 
           string.replace(compiled, each: replace, with: result)
-          |> latex(stack, next_id + list.length(factors))
+          |> latex(
+            stack
+              |> list.append(stack_to_add),
+            next_id + list.length(factors),
+          )
         }
 
         expr.Exponenation(base, exp) -> {

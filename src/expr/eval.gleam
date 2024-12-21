@@ -7,17 +7,14 @@ fn simplify_vars(factors: expr.Factors, acc: List(Expr)) -> expr.Factors {
 
   case curr {
     expr.Var(_) -> {
-      let count = list.count(factors, fn(i) { i == curr })
+      let #(are_curr, arent_curr) = list.partition(factors, fn(i) { i == curr })
 
-      case count {
-        1 ->
-          list.drop(factors, 1)
-          |> simplify_vars([curr, ..acc])
+      case are_curr {
+        [_] -> simplify_vars(arent_curr, [curr, ..acc])
 
         _ ->
-          list.filter(factors, fn(i) { i != curr })
-          |> simplify_vars([
-            expr.Exponenation(base: curr, exp: Number(count)),
+          simplify_vars(arent_curr, [
+            expr.Exponenation(base: curr, exp: Number(list.length(are_curr))),
             ..acc
           ])
       }

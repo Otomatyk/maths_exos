@@ -35,31 +35,57 @@ pub fn equal_order_independant_test() {
   |> be_false
 }
 
-pub fn remove_commons_test() {
-  remove_commons([], [])
-  |> equal(#([], []))
+pub fn remove_commons_two_test() {
+  remove_commons([[], []])
+  |> equal([[], []])
 
-  remove_commons([1], [])
-  |> equal(#([1], []))
+  remove_commons([[1], []])
+  |> equal([[1], []])
 
-  remove_commons([], [1])
-  |> equal(#([], [1]))
+  remove_commons([[], [1]])
+  |> equal([[], [1]])
 
-  remove_commons([1], [1])
-  |> equal(#([], []))
+  remove_commons([[1], [1]])
+  |> equal([[], []])
 
-  remove_commons([2], [2, 2])
-  |> equal(#([], []))
+  remove_commons([[2], [2, 2]])
+  |> equal([[], []])
 
-  remove_commons([2, 3, 3, 5], [5, 2, 3])
-  |> equal(#([], []))
+  remove_commons([[2, 3, 3, 5], [5, 2, 3]])
+  |> equal([[], []])
 
-  remove_commons([3, 3, 1, 2], [3, 2])
-  |> equal(#([1], []))
+  remove_commons([[3, 3, 1, 2], [3, 2]])
+  |> equal([[1], []])
 
-  remove_commons([1, 2, 3], [4, 5, 6])
-  |> equal(#([1, 2, 3], [4, 5, 6]))
+  remove_commons([[1, 2, 3], [4, 5, 6]])
+  |> equal([[1, 2, 3], [4, 5, 6]])
 
-  remove_commons([1, 2, 8, 3], [8, 4, 5, 6])
-  |> equal(#([1, 2, 3], [4, 5, 6]))
+  remove_commons([[1, 2, 8, 3], [8, 4, 5, 6]])
+  |> equal([[1, 2, 3], [4, 5, 6]])
+}
+
+pub fn remove_commons_three_test() {
+  remove_commons([[], [], []])
+  |> equal([[], [], []])
+
+  remove_commons([[1], [], []])
+  |> equal([[1], [], []])
+
+  remove_commons([[1], [1], [1]])
+  |> equal([[], [], []])
+
+  remove_commons([[2], [2, 2], [2, 2, 2]])
+  |> equal([[], [], []])
+
+  remove_commons([[2, 3, 5], [5, 3, 2, 2], [5, 5, 2, 3, 3]])
+  |> equal([[], [], []])
+
+  remove_commons([[1, 2, 3], [3, 2, 1], [1, 2, 3, 2, 4]])
+  |> equal([[], [], [4]])
+
+  remove_commons([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+  |> equal([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+
+  remove_commons([[1, 2, 8, 3], [8, 4, 5, 6], [7, 8, 9]])
+  |> equal([[1, 2, 3], [4, 5, 6], [7, 9]])
 }

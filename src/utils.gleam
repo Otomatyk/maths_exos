@@ -44,3 +44,13 @@ pub fn remove_commons(values: List(List(a))) -> List(List(a)) {
     !list.all(values, fn(other_list) { list.contains(other_list, ele_of_curr) })
   })
 }
+
+/// To be consired as a "common", a value should be contained in ALL lists
+pub fn only_commons(values: List(List(a))) -> List(List(a)) {
+  use curr_list <- list.map(values)
+
+  curr_list
+  |> list.filter(fn(ele_of_curr) {
+    list.all(values, fn(other_list) { list.contains(other_list, ele_of_curr) })
+  })
+}

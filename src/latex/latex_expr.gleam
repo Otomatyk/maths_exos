@@ -3,6 +3,7 @@ import gleam/int
 import gleam/io
 import gleam/list
 import gleam/string
+import utils.{first_or_return_acc}
 
 // "$1" [Add(Mul(3, 2), Sub(10, 3))]
 // "($2) + ($3)" [Mul(3, 2), Sub(10, 3)]
@@ -129,79 +130,69 @@ fn factors_to_string_and_stack(
 }
 
 fn latex(compiled: String, stack: List(StackElement), next_id: Int) -> String {
-  let curr = list.first(stack)
+  use #(curr, curr_id, parent_order) <- first_or_return_acc(stack, compiled)
+
+  let stack = list.drop(stack, 1)
+  let replace = placeholder(curr_id)
 
   case curr {
-    Ok(#(curr, curr_id, parent_order)) -> {
-      let stack = list.drop(stack, 1)
-      let replace = placeholder(curr_id)
-
-      case curr {
-        expr.Number(n) -> {
-          compiled
-          |> string.replace(each: replace, with: int.to_string(n))
-          |> latex(stack, next_id + 1)
-        }
-
-        expr.Var(litteral) -> {
-          compiled
-          |> string.replace(each: replace, with: litteral)
-          |> latex(stack, next_id + 1)
-        }
-
-        expr.Addition(terms) -> {
-          let stack =
-            id_for_each(next_id, terms, addition_priority)
-            |> list.append(stack)
-
-          let compiled =
-            list.index_map(terms, fn(_, idx) { placeholder(next_id + idx) })
-            |> string.join(" + ")
-            |> put_parenthesis_if(parent_order > addition_priority)
-            |> string.replace(compiled, each: replace, with: _)
-
-          latex(compiled, stack, next_id + list.length(terms))
-        }
-
-        expr.Multiplication(factors) -> {
-          let #(result, stack_to_add) =
-            factors_to_string_and_stack(
-              factors,
-              next_id,
-              multiplication_priority,
-            )
-
-          string.replace(compiled, each: replace, with: result)
-          |> latex(
-            stack
-              |> list.append(stack_to_add),
-            next_id + list.length(factors),
-          )
-        }
-
-        expr.Exponenation(base, exp) -> {
-          let stack =
-            [
-              #(base, next_id, exponenation_priority),
-              #(exp, next_id + 1, new_context_priority),
-            ]
-            |> list.append(stack)
-
-          let compiled =
-            {
-              "{"
-              <> placeholder(next_id)
-              <> "} ^ {"
-              <> placeholder(next_id + 1)
-              <> "}"
-            }
-            |> string.replace(compiled, each: replace, with: _)
-
-          latex(compiled, stack, next_id + 2)
-        }
-      }
+    expr.Number(n) -> {
+      compiled
+      |> string.replace(each: replace, with: int.to_string(n))
+      |> latex(stack, next_id + 1)
     }
 
-    Error(_) -> compiled
+    expr.Var(litteral) -> {
+      compiled
+      |> string.replace(each: replace, with: litteral)
+      |> latex(stack, next_id + 1)
+    }
+
+    expr.Addition(terms) -> {
+      let stack =
+        id_for_each(next_id, terms, addition_priority)
+        |> list.append(stack)
+
+      let compiled =
+        list.index_map(terms, fn(_, idx) { placeholder(next_id + idx) })
+        |> string.join(" + ")
+        |> put_parenthesis_if(parent_order > addition_priority)
+        |> string.replace(compiled, each: replace, with: _)
+
+      latex(compiled, stack, next_id + list.length(terms))
+    }
+
+    expr.Multiplication(factors) -> {
+      let #(result, stack_to_add) =
+        factors_to_string_and_stack(factors, next_id, multiplication_priority)
+
+      string.replace(compiled, each: replace, with: result)
+      |> latex(
+        stack
+          |> list.append(stack_to_add),
+        next_id + list.length(factors),
+      )
+    }
+
+    expr.Exponenation(base, exp) -> {
+      let stack =
+        [
+          #(base, next_id, exponenation_priority),
+          #(exp, next_id + 1, new_context_priority),
+        ]
+        |> list.append(stack)
+
+      let compiled =
+        {
+          "{"
+          <> placeholder(next_id)
+          <> "} ^ {"
+          <> placeholder(next_id + 1)
+          <> "}"
+        }
+        |> string.replace(compiled, each: replace, with: _)
+
+      latex(compiled, stack, next_id + 2)
+    }
   }
 }

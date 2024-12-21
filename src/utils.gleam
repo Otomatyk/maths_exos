@@ -1,5 +1,20 @@
 import gleam/list
 
+pub fn return_if(condition: Bool, value: a, otherwise: fn() -> a) -> a {
+  case condition {
+    True -> value
+    False -> otherwise()
+  }
+}
+
+/// Used to simplify a recursive function
+pub fn first_or_return_acc(list: List(a), acc: b, if_first: fn(a) -> b) -> b {
+  case list.first(list) {
+    Ok(curr) -> if_first(curr)
+    Error(_) -> acc
+  }
+}
+
 pub fn equal_order_independant(a: List(a), b: List(a)) -> Bool {
   case list.first(a) {
     Ok(curr) -> {

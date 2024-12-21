@@ -1,40 +1,31 @@
 import expr/expr.{type Expr, Number}
 import gleam/list
-
-fn return_if(condition: Bool, return: a, otherwise: fn() -> a) -> a {
-  case condition {
-    True -> return
-    False -> otherwise()
-  }
-}
+import utils.{first_or_return_acc, return_if}
 
 fn simplify_vars(factors: expr.Factors, acc: List(Expr)) -> expr.Factors {
-  case list.first(factors) {
-    Ok(curr) -> {
-      case curr {
-        expr.Var(_) -> {
-          let count = list.count(factors, fn(i) { i == curr })
+  use curr <- first_or_return_acc(factors, acc)
 
-          case count {
-            1 ->
-              list.drop(factors, 1)
-              |> simplify_vars([curr, ..acc])
+  case curr {
+    expr.Var(_) -> {
+      let count = list.count(factors, fn(i) { i == curr })
 
-            _ ->
-              list.filter(factors, fn(i) { i != curr })
-              |> simplify_vars([
-                expr.Exponenation(base: curr, exp: Number(count)),
-                ..acc
-              ])
-          }
-        }
+      case count {
+        1 ->
+          list.drop(factors, 1)
+          |> simplify_vars([curr, ..acc])
 
         _ ->
-          list.drop(factors, 1)
-          |> simplify_vars(acc)
+          list.filter(factors, fn(i) { i != curr })
+          |> simplify_vars([
+            expr.Exponenation(base: curr, exp: Number(count)),
+            ..acc
+          ])
       }
     }
-    Error(_) -> acc
+
+    _ ->
+      list.drop(factors, 1)
+      |> simplify_vars(acc)
   }
 }
 

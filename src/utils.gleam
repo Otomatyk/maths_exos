@@ -37,16 +37,10 @@ pub fn equal_order_independant(a: List(a), b: List(a)) -> Bool {
 
 /// To be consired as a "common", a value should be contained in ALL lists
 pub fn remove_commons(values: List(List(a))) -> List(List(a)) {
-  values
-  |> list.map(fn(curr) {
-    let assert Ok(#(_, without_curr)) = list.pop(values, fn(a) { a == curr })
+  use curr_list <- list.map(values)
 
-    curr
-    |> list.filter(fn(ele_of_curr) {
-      !{
-        without_curr
-        |> list.all(fn(other_list) { list.contains(other_list, ele_of_curr) })
-      }
-    })
+  curr_list
+  |> list.filter(fn(ele_of_curr) {
+    !list.all(values, fn(other_list) { list.contains(other_list, ele_of_curr) })
   })
 }

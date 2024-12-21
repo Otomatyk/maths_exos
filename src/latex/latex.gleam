@@ -1,9 +1,9 @@
+import exercice
+import expr/expr
 import gleam/list
 import gleam/string
-import latex/latex_expr
 import latex/latex_exercice_sheet
-import expr/expr
-import exercice
+import latex/latex_expr
 
 /// Generate the latex code of an expression, wrapped with `$`
 pub fn from_expr(expr: expr.Expr) -> String {

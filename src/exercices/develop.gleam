@@ -1,9 +1,9 @@
+import exercice
+import expr/eval.{simplify}
+import expr/expr.{multiply}
 import gleam/int
 import gleam/list
 import latex/latex
-import expr/expr.{multiply}
-import expr/eval.{simplify}
-import exercice
 
 fn random_number() -> Int {
   let n = int.random(21) - 10
@@ -19,7 +19,7 @@ fn generate_one_exerice() -> exercice.Question {
     let n = random_number()
     case n {
       1 -> #(1, expr.Var("x"))
-      _ -> #(n, expr.Multiplication([expr.Var("x"), expr.Number(n)]))
+      _ -> #(n, multiply([expr.Var("x"), expr.Number(n)]))
     }
   }
 
@@ -29,7 +29,7 @@ fn generate_one_exerice() -> exercice.Question {
   let d = random_number()
 
   let prompt =
-    expr.Multiplication([
+    multiply([
       expr.Addition(
         [a, expr.Number(b)]
         |> list.shuffle(),
@@ -42,12 +42,11 @@ fn generate_one_exerice() -> exercice.Question {
 
   let solution =
     expr.Addition([
-      simplify(multiply(a, c)),
-      simplify(multiply(
-        expr.Var("x"),
-        expr.Number(x_factor_1 * d + b * x_factor_2),
-      )),
-      simplify(multiply(expr.Number(b), expr.Number(d))),
+      simplify(multiply([a, c])),
+      simplify(
+        multiply([expr.Var("x"), expr.Number(x_factor_1 * d + b * x_factor_2)]),
+      ),
+      simplify(multiply([expr.Number(b), expr.Number(d)])),
     ])
 
   exercice.Question(

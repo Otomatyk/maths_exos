@@ -1,7 +1,7 @@
-import gleam/list
-import gleam/int
-import gleam/string
 import exercice
+import gleam/int
+import gleam/list
+import gleam/string
 
 const par = "\n\n"
 

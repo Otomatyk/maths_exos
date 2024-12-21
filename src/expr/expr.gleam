@@ -7,9 +7,14 @@ pub type Instr {
   InstrExpr(Expr)
 }
 
-pub type Factors = List(Expr)
-pub type Terms = List(Expr)
+pub type Factors =
+  List(Expr)
 
+pub type Terms =
+  List(Expr)
+
+/// `Multiplication` and `Addition` should never be created with this type,
+/// instead use `multiply` and `add` in order to avoid nested mutliplication/addition
 pub type Expr {
   /// Intern value used for expression compilation, it can be simply ignored since it shouldn't be used anywhere else 
   UsedExpr(op: Instr)
@@ -21,18 +26,30 @@ pub type Expr {
   Number(Int)
 }
 
-pub fn multiply(a: Expr, b: Expr) -> Expr {
-  let factors_a = case a {
-    Multiplication(factors) -> factors
-    _ -> [a]
-  }
+pub fn multiply(factors: Factors) -> Expr {
+  let factors =
+    factors
+    |> list.fold([], fn(acc, factor) {
+      case factor {
+        Multiplication(mul_factors) -> list.append(acc, mul_factors)
+        _ -> list.append(acc, [factor])
+      }
+    })
 
-  let factors_b = case b {
-    Multiplication(factors) -> factors
-    _ -> [b]
-  }
+  Multiplication(factors)
+}
 
-  Multiplication(list.append(factors_a, factors_b))
+pub fn add(terms: Terms) -> Expr {
+  let terms =
+    terms
+    |> list.fold([], fn(acc, term) {
+      case term {
+        Addition(add_terms) -> list.append(acc, add_terms)
+        _ -> list.append(acc, [term])
+      }
+    })
+
+  Addition(terms)
 }
 
 pub fn is_number(expr: Expr) -> Bool {

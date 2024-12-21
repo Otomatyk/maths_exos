@@ -1,8 +1,8 @@
+import expr/expr.{type Expr}
 import gleam/int
+import gleam/io
 import gleam/list
 import gleam/string
-import gleam/io
-import expr/expr.{type Expr}
 
 // "$1" [Add(Mul(3, 2), Sub(10, 3))]
 // "($2) + ($3)" [Mul(3, 2), Sub(10, 3)]

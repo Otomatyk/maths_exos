@@ -1,5 +1,5 @@
-import gleam/list
 import expr/expr.{type Expr, Number}
+import gleam/list
 
 fn return_if(condition: Bool, return: a, otherwise: fn() -> a) -> a {
   case condition {
@@ -58,17 +58,16 @@ fn simplify_multiplication(factors: expr.Factors) -> Expr {
     Ok(expr) -> {
       case list.length(without_numbers), number_product {
         1, Number(1) -> expr
-        _, Number(1) -> expr.Multiplication(without_numbers)
-        _, _ ->
-          expr.Multiplication(list.append(without_numbers, [number_product]))
+        _, Number(1) -> expr.multiply(without_numbers)
+        _, _ -> expr.multiply(list.append(without_numbers, [number_product]))
       }
     }
     Error(_) -> number_product
   }
 }
 
-pub fn develop(factors: expr.Factors) -> expr.Terms { 
-
+pub fn develop(factors: expr.Factors) -> expr.Terms {
+  todo
 }
 
 pub fn simplify(expr: Expr) -> Expr {

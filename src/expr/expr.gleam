@@ -16,9 +16,6 @@ pub type Terms =
 /// `Multiplication` and `Addition` should never be created with this type,
 /// instead use `multiply` and `add` in order to avoid nested mutliplication/addition
 pub type Expr {
-  /// Intern value used for expression compilation, it can be simply ignored since it shouldn't be used anywhere else 
-  UsedExpr(op: Instr)
-
   Addition(terms: Terms)
   Multiplication(factors: Factors)
   Exponenation(base: Expr, exp: Expr)

@@ -199,8 +199,6 @@ fn latex(compiled: String, stack: List(StackElement), next_id: Int) -> String {
 
           latex(compiled, stack, next_id + 2)
         }
-
-        expr.UsedExpr(_) -> latex(compiled, stack, next_id)
       }
     }
 

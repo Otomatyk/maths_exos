@@ -1,37 +1,37 @@
 import gleeunit
 import gleeunit/should.{be_false, be_true, equal}
-import utils.{equal_order_independant, only_commons, remove_commons}
+import utils.{eq, equal_order_independant, only_commons, remove_commons}
 
 pub fn main() {
   gleeunit.main()
 }
 
 pub fn equal_order_independant_test() {
-  equal_order_independant([], [])
+  equal_order_independant([], [], eq)
   |> be_true
 
-  equal_order_independant([], [1])
+  equal_order_independant([], [1], eq)
   |> be_false
 
-  equal_order_independant([1], [])
+  equal_order_independant([1], [], eq)
   |> be_false
 
-  equal_order_independant([1], [1])
+  equal_order_independant([1], [1], eq)
   |> be_true
 
-  equal_order_independant([1], [2])
+  equal_order_independant([1], [2], eq)
   |> be_false
 
-  equal_order_independant([1], [1, 1])
+  equal_order_independant([1], [1, 1], eq)
   |> be_false
 
-  equal_order_independant([1, 1], [1, 1])
+  equal_order_independant([1, 1], [1, 1], eq)
   |> be_true
 
-  equal_order_independant([1, 2, 3], [3, 1, 2])
+  equal_order_independant([1, 2, 3], [3, 1, 2], eq)
   |> be_true
 
-  equal_order_independant([1, 1, 1, 2], [2, 2, 1, 1])
+  equal_order_independant([1, 1, 1, 2], [2, 2, 1, 1], eq)
   |> be_false
 }
 

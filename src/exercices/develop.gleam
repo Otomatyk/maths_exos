@@ -1,6 +1,6 @@
 import exercice
-import expr/eval.{simplify}
-import expr/expr.{multiply}
+import expr/expr.{add, multiply}
+import expr/simplify
 import gleam/int
 import gleam/list
 import latex/latex
@@ -30,23 +30,23 @@ fn generate_one_exerice() -> exercice.Question {
 
   let prompt =
     multiply([
-      expr.Addition(
+      add(
         [a, expr.Number(b)]
         |> list.shuffle(),
       ),
-      expr.Addition(
+      add(
         [c, expr.Number(d)]
         |> list.shuffle(),
       ),
     ])
 
   let solution =
-    expr.Addition([
-      simplify(multiply([a, c])),
-      simplify(
+    add([
+      simplify.expr(multiply([a, c])),
+      simplify.expr(
         multiply([expr.Var("x"), expr.Number(x_factor_1 * d + b * x_factor_2)]),
       ),
-      simplify(multiply([expr.Number(b), expr.Number(d)])),
+      simplify.expr(multiply([expr.Number(b), expr.Number(d)])),
     ])
 
   exercice.Question(

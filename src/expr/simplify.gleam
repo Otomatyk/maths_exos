@@ -26,7 +26,7 @@ fn simplify_vars(factors: expr.Factors, acc: List(Expr)) -> expr.Factors {
   }
 }
 
-fn simplify_multiplication(factors: expr.Factors) -> Expr {
+fn simplify_factors(factors: expr.Factors) -> Expr {
   use <- return_if(list.contains(factors, Number(0)), Number(0))
 
   let without_numbers = simplify_vars(factors, [])
@@ -54,16 +54,48 @@ fn simplify_multiplication(factors: expr.Factors) -> Expr {
   }
 }
 
-pub fn develop(factors: expr.Factors) -> expr.Terms {
-  todo
+fn simplify_terms(terms: expr.Terms) -> Expr {
+  let numbers_sum =
+    Number(
+      terms
+      |> list.fold(0, fn(acc, term) {
+        case term {
+          Number(n) -> acc + n
+          _ -> acc
+        }
+      }),
+    )
+
+  let var_terms =
+    terms
+    |> list.unique()
+    |> list.filter_map(fn(term) {
+      case term {
+        expr.Var(_) -> {
+          let count = list.count(terms, fn(i) { i == term })
+
+          case count {
+            1 -> Ok(term)
+            _ -> Ok(expr.multiply([Number(count), term]))
+          }
+        }
+        _ -> Error(Nil)
+      }
+    })
+
+  case numbers_sum, var_terms {
+    Number(0), [var] -> var
+    Number(0), _ -> expr.add(var_terms)
+    _, [] -> numbers_sum
+    _, _ -> expr.add([numbers_sum, ..var_terms])
+  }
 }
 
-pub fn simplify(expr: Expr) -> Expr {
+pub fn expr(expr: Expr) -> Expr {
   case expr {
-    expr.Multiplication(factors) -> {
-      factors
-      |> simplify_multiplication()
-    }
+    expr.Multiplication(mul_factors) -> simplify_factors(mul_factors)
+
+    expr.Addition(add_terms) -> simplify_terms(add_terms)
 
     _ -> panic
   }

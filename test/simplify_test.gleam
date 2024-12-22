@@ -1,5 +1,5 @@
-import expr/eval.{simplify}
-import expr/expr.{Number, Var, multiply}
+import expr/expr.{Number, Var, add, multiply}
+import expr/simplify
 import gleeunit
 import gleeunit/should.{equal}
 
@@ -9,7 +9,7 @@ pub fn main() {
 
 fn simplified_equal(expr: expr.Expr, excepted: expr.Expr) -> Nil {
   expr
-  |> simplify()
+  |> simplify.expr()
   |> equal(excepted)
 }
 
@@ -24,6 +24,9 @@ pub fn simplify_multiplication_test() {
   // Constant -> Product
   multiply([Number(1)])
   |> simplified_equal(Number(1))
+
+  multiply([Var("x")])
+  |> simplified_equal(Var("x"))
 
   multiply([Number(1), Var("y"), Number(1), Number(77)])
   |> simplified_equal(multiply([Var("y"), Number(77)]))
@@ -63,4 +66,37 @@ pub fn simplify_multiplication_test() {
   // Can't be more simplified
   multiply([Number(-4), Var("x")])
   |> simplified_equal(multiply([Var("x"), Number(-4)]))
+}
+
+pub fn simplify_addition_test() {
+  add([Number(-4), Number(8)])
+  |> simplified_equal(Number(4))
+
+  add([])
+  |> simplified_equal(add([]))
+
+  add([Number(6)])
+  |> simplified_equal(Number(6))
+
+  add([Number(4), Var("x"), Number(5)])
+  |> simplified_equal(add([Number(9), Var("x")]))
+
+  add([Var("x")])
+  |> simplified_equal(Var("x"))
+
+  add([Var("x"), Var("y")])
+  |> simplified_equal(add([Var("x"), Var("y")]))
+
+  add([Var("x"), Var("x")])
+  |> simplified_equal(multiply([Number(2), Var("x")]))
+
+  add([Var("x"), Var("x"), Var("y"), Var("y")])
+  |> simplified_equal(
+    add([multiply([Number(2), Var("x")]), multiply([Number(2), Var("y")])]),
+  )
+
+  add([Var("x"), Var("z"), Number(4), Number(8), Var("y"), Var("y")])
+  |> simplified_equal(
+    add([Number(12), Var("x"), Var("z"), multiply([Number(2), Var("y")])]),
+  )
 }

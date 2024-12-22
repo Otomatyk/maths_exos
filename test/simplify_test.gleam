@@ -1,7 +1,7 @@
 import expr/expr.{Number, Var, add, multiply}
 import expr/simplify
 import gleeunit
-import gleeunit/should.{equal}
+import test_utils.{equal_expr}
 
 pub fn main() {
   gleeunit.main()
@@ -10,7 +10,7 @@ pub fn main() {
 fn simplified_equal(expr: expr.Expr, excepted: expr.Expr) -> Nil {
   expr
   |> simplify.expr()
-  |> equal(excepted)
+  |> equal_expr(excepted)
 }
 
 pub fn simplify_multiplication_test() {

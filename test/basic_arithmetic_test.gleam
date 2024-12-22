@@ -1,4 +1,6 @@
-import expr/expr.{Addition, Multiplication, Number, Var, add, multiply}
+import expr/expr.{
+  Addition, Exponenation, Multiplication, Number, Var, add, multiply, squared,
+}
 import gleeunit/should
 
 pub fn multiply_test() {
@@ -45,4 +47,12 @@ pub fn add_test() {
       Multiplication([Var("z"), Number(5)]),
     ]),
   )
+}
+
+pub fn exponentation_test() {
+  squared(Number(4))
+  |> should.equal(Exponenation(base: Number(4), exp: Number(2)))
+
+  squared(add([Number(5), Var("x")]))
+  |> should.equal(Exponenation(base: add([Number(5), Var("x")]), exp: Number(2)))
 }

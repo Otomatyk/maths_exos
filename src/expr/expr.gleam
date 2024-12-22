@@ -49,6 +49,10 @@ pub fn add(terms: Terms) -> Expr {
   Addition(terms)
 }
 
+pub fn squared(expr: Expr) -> Expr {
+  Exponenation(expr, Number(2))
+}
+
 pub fn is_number(expr: Expr) -> Bool {
   case expr {
     Number(_) -> True

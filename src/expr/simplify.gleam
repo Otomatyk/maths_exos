@@ -66,28 +66,25 @@ fn simplify_terms(terms: expr.Terms) -> Expr {
       }),
     )
 
-  let var_terms =
+  let other_terms =
     terms
     |> list.unique()
     |> list.filter_map(fn(term) {
-      case term {
-        expr.Var(_) -> {
-          let count = list.count(terms, fn(i) { i == term })
+      use <- utils.return_if(expr.is_number(term), Error(Nil))
 
-          case count {
-            1 -> Ok(term)
-            _ -> Ok(expr.multiply([Number(count), term]))
-          }
-        }
-        _ -> Error(Nil)
+      let count = list.count(terms, fn(i) { i == term })
+
+      case count {
+        1 -> Ok(term)
+        _ -> Ok(expr.multiply([Number(count), term]))
       }
     })
 
-  case numbers_sum, var_terms {
-    Number(0), [var] -> var
-    Number(0), _ -> expr.add(var_terms)
+  case numbers_sum, other_terms {
+    Number(0), [term] -> term
+    Number(0), _ -> expr.add(other_terms)
     _, [] -> numbers_sum
-    _, _ -> expr.add([numbers_sum, ..var_terms])
+    _, _ -> expr.add([numbers_sum, ..other_terms])
   }
 }
 

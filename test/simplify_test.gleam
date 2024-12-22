@@ -99,4 +99,10 @@ pub fn simplify_addition_test() {
   |> simplified_equal(
     add([Number(12), Var("x"), Var("z"), multiply([Number(2), Var("y")])]),
   )
+
+  add([multiply([Number(3), Var("y")]), Number(5)])
+  |> simplified_equal(add([Number(5), multiply([Number(3), Var("y")])]))
+
+  add([multiply([Number(3), Var("y")]), multiply([Number(3), Var("y")])])
+  |> simplified_equal(multiply([Number(2), Number(3), Var("y")]))
 }

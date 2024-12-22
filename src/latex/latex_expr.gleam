@@ -1,26 +1,14 @@
 import expr/expr.{type Expr}
 import gleam/int
-import gleam/io
 import gleam/list
 import gleam/string
 import utils.{first_or_return_acc}
-
-// "$1" [Add(Mul(3, 2), Sub(10, 3))]
-// "($2) + ($3)" [Mul(3, 2), Sub(10, 3)]
-// "($4 * $5) + ($2)" [3, 2, Sub(10, 3)]
-//
-
-const put_parenthesis_priority = 999
 
 const exponenation_priority = 3
 
 const multiplication_priority = 2
 
 const addition_priority = 1
-
-const number_priority = 0
-
-const var_priority = 0
 
 const new_context_priority = -999
 
@@ -58,32 +46,6 @@ fn put_parenthesis_if(s: String, when: Bool) -> String {
     False -> s
   }
 }
-
-// fn a(factors: List(Expr), stringified: String, stack: List(StackElement), next_id: Int, is_last_number: Bool) -> #(String, List(StackElement))  {
-
-//     case list.first(factors) {
-//       Ok(expr) -> {
-//         let factors = list.drop(factors, 1)
-
-//         case expr {
-//           expr.Number(_) -> {
-//             a(
-//               factors,
-//             )
-//           }
-//         }
-//       }
-
-//       Error(_) -> #(stringified, stack)
-//     }
-//   }
-
-// fn factors_to_string_and_stack_(factors: List(Expr), next_id: Int, parent_order: Int) -> #(String, List(StackElement)) {
-
-//   let impl = 
-
-//   impl(factors, acc)
-// }
 
 fn factors_to_string_and_stack(
   factors: expr.Factors,

@@ -77,6 +77,12 @@ pub fn complex_operations_test() {
   multiply([add([Number(8), Var("x")]), add([Var("x"), Number(2)])])
   |> latex_equal("(8 + x)(x + 2)")
 
+  multiply([
+    add([multiply([Number(2), Var("x")]), Number(3)]),
+    add([Number(-5), multiply([Number(-4), Var("y")])]),
+  ])
+  |> latex_equal("(2x + 3)(-5 -4y)")
+
   add([
     Exponenation(base: Var("x"), exp: Number(5)),
     Exponenation(base: Var("y"), exp: Number(2)),

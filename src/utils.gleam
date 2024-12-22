@@ -4,6 +4,13 @@ pub fn eq(a: a, b: a) -> Bool {
   a == b
 }
 
+fn list_eq(list_a: List(a), list_b: List(a), eq_fn: fn(a, a) -> Bool) {
+  use <- return_if(list.length(list_a) != list.length(list_b), False)
+
+  list.map2(list_a, list_b, eq_fn)
+  |> list.all(eq(_, True))
+}
+
 pub fn return_if(condition: Bool, value: a, otherwise: fn() -> a) -> a {
   case condition {
     True -> value
@@ -24,12 +31,12 @@ pub fn equal_order_independant(
   b: List(a),
   eq_fn: fn(a, a) -> Bool,
 ) -> Bool {
-  use curr <- first_or_return_acc(a, a == b)
+  use curr <- first_or_return_acc(a, list.is_empty(b))
 
   let #(a_are_curr, a_arent_curr) = list.partition(a, eq_fn(_, curr))
   let #(b_are_curr, b_arent_curr) = list.partition(b, eq_fn(_, curr))
 
-  case a_are_curr == b_are_curr {
+  case list_eq(a_are_curr, b_are_curr, eq_fn) {
     True -> equal_order_independant(a_arent_curr, b_arent_curr, eq_fn)
     False -> False
   }

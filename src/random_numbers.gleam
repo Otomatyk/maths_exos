@@ -15,3 +15,10 @@ pub fn non_null_relatif_int() -> Int {
     _ -> n
   }
 }
+
+pub fn non_null_int_relatif_if(when: Bool) -> Int {
+  case when {
+    True -> non_null_negative_int()
+    False -> non_null_relatif_int()
+  }
+}

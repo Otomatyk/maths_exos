@@ -34,6 +34,23 @@ pub fn develop_simple_test() {
     ]),
   )
 
+  [Var("z"), add([multiply([Number(-1), Var("x")]), Var("a")])]
+  |> developped_equal(
+    add([
+      multiply([Var("z"), Var("x"), Number(-1)]),
+      multiply([Var("z"), Var("a")]),
+    ]),
+  )
+
+  [Var("z"), add([Number(-6), Var("a"), Number(-1)])]
+  |> developped_equal(
+    add([
+      multiply([Var("z"), Number(-6)]),
+      multiply([Var("z"), Var("a")]),
+      multiply([Var("z"), Number(-1)]),
+    ]),
+  )
+
   [
     add([Number(3), Var("x")]),
     expr.Exponenation(base: Number(8), exp: Number(2)),

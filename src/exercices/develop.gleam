@@ -1,22 +1,13 @@
 import exercice
 import expr/expr.{add, multiply}
 import expr/simplify
-import gleam/int
 import gleam/list
 import latex/latex
-
-fn random_number() -> Int {
-  let n = int.random(21) - 10
-
-  case n {
-    0 -> random_number()
-    _ -> n
-  }
-}
+import random_numbers.{non_null_relatif_int}
 
 fn generate_one_exerice() -> exercice.Question {
   let generate = fn() {
-    let n = random_number()
+    let n = non_null_relatif_int()
     case n {
       1 -> #(1, expr.Var("x"))
       _ -> #(n, multiply([expr.Var("x"), expr.Number(n)]))
@@ -24,9 +15,9 @@ fn generate_one_exerice() -> exercice.Question {
   }
 
   let #(x_factor_1, a) = generate()
-  let b = random_number()
+  let b = non_null_relatif_int()
   let #(x_factor_2, c) = generate()
-  let d = random_number()
+  let d = non_null_relatif_int()
 
   let prompt =
     multiply([

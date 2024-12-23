@@ -1,4 +1,9 @@
 import gleam/list
+import gleam/string
+
+const alphabet = "abcdefghijklmnopqrstuvwxyz"
+
+const var_names = "xyzabcdefigjklmnophsturvqw"
 
 pub fn eq(a: a, b: a) -> Bool {
   a == b
@@ -9,6 +14,18 @@ fn list_eq(list_a: List(a), list_b: List(a), eq_fn: fn(a, a) -> Bool) {
 
   list.map2(list_a, list_b, eq_fn)
   |> list.all(eq(_, True))
+}
+
+/// Each number is mapped to one letter.
+/// If `n` exceeds 26, the cycle re-starts
+pub fn int_to_uppercase_letter(n: Int) -> String {
+  string.slice(alphabet, { n % 26 }, 1) |> string.uppercase()
+}
+
+/// Each number is mapped to one letter.
+/// If `n` exceeds 26, the cycle re-starts
+pub fn int_to_var(n: Int) -> String {
+  string.slice(var_names, { n % 26 }, 1)
 }
 
 pub fn return_if(condition: Bool, value: a, otherwise: fn() -> a) -> a {

@@ -1,13 +1,6 @@
 import gleam/list
 import utils.{equal_order_independant}
 
-pub type Instr {
-  InstrAdd(arrity: Int)
-  InstrMul(arrity: Int)
-  InstrPow
-  InstrExpr(Expr)
-}
-
 pub type Factors =
   List(Expr)
 

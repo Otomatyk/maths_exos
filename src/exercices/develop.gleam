@@ -1,6 +1,7 @@
 import exercice
 import expr/distributivity
 import expr/expr.{Var, add, multiply}
+import expr/order
 import expr/simplify
 
 // import gleam/io
@@ -38,5 +39,38 @@ pub fn first_degree_exercice(
   exercice.Exercice(
     prompt: default_develop_prompt,
     questions: list.range(0, 4) |> list.map(first_degree_question),
+  )
+}
+
+pub fn second_degree_exercice(
+  random_numbers_fn generate_number: random_numbers.GenerateIntFn,
+) -> exercice.Exercice {
+  let second_degree_question = fn(i: Int) {
+    let factors = [
+      add(
+        [generate_number(), multiply([Var("x"), generate_number()])]
+        |> list.shuffle(),
+      ),
+      add(
+        [generate_number(), multiply([Var("x"), generate_number()])]
+        |> list.shuffle(),
+      ),
+    ]
+
+    let assert Ok(developped) = distributivity.develop(factors)
+    let assert expr.Addition(terms) = developped |> simplify.deep_expr()
+    let developped = terms |> order.terms() |> expr.Addition()
+
+    let starts = int_to_uppercase_letter(i) <> " = "
+
+    exercice.Question(
+      prompt: starts <> { multiply(factors) |> latex.from_expr() },
+      solution: starts <> latex.from_expr(developped),
+    )
+  }
+
+  exercice.Exercice(
+    prompt: default_develop_prompt,
+    questions: list.range(0, 4) |> list.map(second_degree_question),
   )
 }

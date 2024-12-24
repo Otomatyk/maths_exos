@@ -1,3 +1,4 @@
+import expr/distributivity
 import expr/expr.{type Expr, Number}
 import gleam/list
 import utils.{first_or_return_acc, return_if}
@@ -95,5 +96,21 @@ pub fn expr(expr: Expr) -> Expr {
     expr.Addition(add_terms) -> simplify_terms(add_terms)
 
     _ -> panic
+  }
+}
+
+/// Simplify an expr until can't be anymore
+/// This function isn't tail recursive
+pub fn deep_expr(expr: Expr) -> Expr {
+  case expr {
+    expr.Multiplication(factors) -> {
+      factors |> list.map(deep_expr) |> simplify_factors()
+    }
+
+    expr.Addition(terms) -> {
+      terms |> list.map(deep_expr) |> simplify_terms()
+    }
+
+    _ -> expr
   }
 }

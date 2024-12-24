@@ -12,15 +12,15 @@ fn compare_exprs(a, b) {
 
 fn expr_score(expr) -> Int {
   case expr {
-    expr.Exponenation(base: _, exp: expr.Number(n)) -> 100 + n
-    expr.Exponenation(_, _) -> 100
+    expr.Exponenation(base: _, exp: expr.Number(n)) -> 10_000 * { n + 1 }
+    expr.Exponenation(_, _) -> 10_000
 
     expr.Multiplication(factors) -> {
       let score =
         factors
-        |> list.fold(10, fn(acc, expr) {
+        |> list.fold(1000, fn(acc, expr) {
           case expr {
-            expr.Number(n) -> acc + n
+            expr.Number(n) -> acc + int.absolute_value(n)
             _ -> acc
           }
         })

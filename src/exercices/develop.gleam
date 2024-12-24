@@ -1,61 +1,42 @@
 import exercice
-import expr/expr.{add, multiply}
+import expr/distributivity
+import expr/expr.{Var, add, multiply}
 import expr/simplify
+
+// import gleam/io
 import gleam/list
 import latex/latex
-import random_numbers.{non_null_relatif_int}
+import random_numbers
+import utils.{int_to_uppercase_letter, int_to_var}
 
-fn generate_one_exerice() -> exercice.Question {
-  let generate = fn() {
-    let n = non_null_relatif_int()
-    case n {
-      1 -> #(1, expr.Var("x"))
-      _ -> #(n, multiply([expr.Var("x"), expr.Number(n)]))
-    }
+const default_develop_prompt = "Developper les expressions suivantes"
+
+pub fn first_degree_exercice(
+  max_terms_number max_terms: Int,
+  random_numbers_fn generate_number: random_numbers.GenerateIntFn,
+) -> exercice.Exercice {
+  let first_degree_question = fn(i: Int) {
+    let assert [first_factor, ..terms] =
+      [generate_number(), generate_number()]
+      |> list.append(
+        list.range(0, max_terms - 2) |> list.map(int_to_var) |> list.map(Var),
+      )
+      |> list.shuffle()
+
+    let factors = [first_factor, add(terms)]
+    let assert Ok(developped) = distributivity.develop(factors)
+    let developped = developped |> simplify.deep_expr()
+
+    let starts = int_to_uppercase_letter(i) <> " = "
+
+    exercice.Question(
+      prompt: starts <> { multiply(factors) |> latex.from_expr() },
+      solution: starts <> latex.from_expr(developped),
+    )
   }
 
-  let #(x_factor_1, a) = generate()
-  let b = non_null_relatif_int()
-  let #(x_factor_2, c) = generate()
-  let d = non_null_relatif_int()
-
-  let prompt =
-    multiply([
-      add(
-        [a, expr.Number(b)]
-        |> list.shuffle(),
-      ),
-      add(
-        [c, expr.Number(d)]
-        |> list.shuffle(),
-      ),
-    ])
-
-  let solution =
-    add([
-      simplify.expr(multiply([a, c])),
-      simplify.expr(
-        multiply([expr.Var("x"), expr.Number(x_factor_1 * d + b * x_factor_2)]),
-      ),
-      simplify.expr(multiply([expr.Number(b), expr.Number(d)])),
-    ])
-
-  exercice.Question(
-    prompt: latex.from_expr(prompt),
-    solution: latex.from_expr(solution),
+  exercice.Exercice(
+    prompt: default_develop_prompt,
+    questions: list.range(0, 4) |> list.map(first_degree_question),
   )
-}
-
-pub fn generate() -> exercice.ExerciceSheet {
-  let exercices =
-    list.range(0, 2)
-    |> list.map(fn(_) {
-      exercice.Exercice(
-        prompt: "Developper les expressions suivantes",
-        questions: list.range(0, 2)
-          |> list.map(fn(_) { generate_one_exerice() }),
-      )
-    })
-
-  exercice.ExerciceSheet(exercices, title: "Developpement")
 }

@@ -36,6 +36,9 @@ pub fn basic_operations_test() {
   add([Number(5), Number(8)])
   |> latex_equal("5 + 8")
 
+  add([Number(-2), Number(-3), Number(-5)])
+  |> latex_equal("-2 - 3 - 5")
+
   add([Var("x"), Number(0), Number(74)])
   |> latex_equal("x + 0 + 74")
 
@@ -77,11 +80,14 @@ pub fn complex_operations_test() {
   multiply([add([Number(8), Var("x")]), add([Var("x"), Number(2)])])
   |> latex_equal("(8 + x)(x + 2)")
 
+  add([multiply([Number(-1), Var("x")]), Number(-5), Var("y")])
+  |> latex_equal("-x - 5 + y")
+
   multiply([
     add([multiply([Number(2), Var("x")]), Number(3)]),
     add([Number(-5), multiply([Number(-4), Var("y")])]),
   ])
-  |> latex_equal("(2x + 3)(-5 -4y)")
+  |> latex_equal("(2x + 3)(-5 - 4y)")
 
   add([
     Exponenation(base: Var("x"), exp: Number(5)),

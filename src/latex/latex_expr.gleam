@@ -19,7 +19,7 @@ pub fn generate(expr: Expr) -> String {
   "$"
   <> {
     latex(placeholder(0), [#(expr, 0, new_context_priority)], 1)
-    |> string.replace(each: "+ -", with: "-")
+    |> string.replace(each: "+ -", with: "- ")
   }
   <> "$"
 }

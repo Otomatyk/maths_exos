@@ -1,15 +1,20 @@
+import exercice
 import exercices/develop
+import gleam/io
 import latex/latex
-import simplifile
+import pdf
+import random_numbers.{non_null_positive_int, non_null_relatif_int}
 
 pub fn main() {
-  let file_path = "C:/Users/Soacramea/Documents/Dev/latex/generated.tex"
+  io.debug("Running...")
 
-  let str =
-    develop.generate()
-    |> latex.from_exercice_sheet()
+  exercice_sheet()
+  |> latex.from_exercice_sheet()
+  |> pdf.latex_to_pdf()
+}
 
-  let assert Ok(_) =
-    str
-    |> simplifile.write(to: file_path)
+fn exercice_sheet() {
+  exercice.ExerciceSheet(title: "Developpement", exercices: [
+    develop.second_degree_exercice(random_numbers_fn: non_null_relatif_int),
+  ])
 }

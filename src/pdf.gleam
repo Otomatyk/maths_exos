@@ -21,27 +21,22 @@ fn generate_file_uuid() -> FileUUID {
 
 pub fn latex_to_pdf(latex_src: String) -> Result(Nil, simplifile.FileError) {
   use cwd <- result.try(simplifile.current_directory())
+  let cwd = cwd <> "/output"
 
-  case simplifile.is_directory(cwd <> "/output") {
+  case simplifile.is_directory(cwd) {
     Error(err) -> Error(err)
     Ok(False) -> {
-      use _ <- result.try(simplifile.create_directory(cwd <> "/output"))
+      use _ <- result.try(simplifile.create_directory(cwd))
 
       latex_to_pdf(latex_src)
     }
 
     Ok(True) -> {
-      let file_path = cwd <> "/output/generated_" <> generate_file_uuid()
+      let file_path = cwd <> "/generated_" <> generate_file_uuid()
 
       use _ <- result.try(simplifile.write(latex_src, to: file_path <> ".tex"))
 
-      {
-        "pdflatex "
-        <> file_path
-        <> ".tex --output-directory="
-        <> cwd
-        <> "/output"
-      }
+      { "pdflatex " <> file_path <> ".tex --output-directory=" <> cwd }
       |> string.to_utf_codepoints()
       |> call_cmd()
 

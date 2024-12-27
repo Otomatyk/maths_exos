@@ -1,4 +1,6 @@
-import exercice
+import exercices/types.{
+  type CompiledExercice, type Exercice, type ExerciceSheet, CompiledExercice,
+}
 import gleam/int
 import gleam/list
 import gleam/string
@@ -22,10 +24,7 @@ fn ordered_list(list: List(String)) -> String {
   <> "\n\\end{enumerate}"
 }
 
-fn solution_and_prompt_exercice(
-  ex: exercice.Exercice,
-  idx: Int,
-) -> exercice.CompiledExercice {
+fn solution_and_prompt_exercice(ex: Exercice, idx: Int) -> CompiledExercice {
   let questions_prompt = list.map(ex.questions, fn(q) { q.prompt })
   let questions_solutions = list.map(ex.questions, fn(q) { q.solution })
 
@@ -45,10 +44,10 @@ fn solution_and_prompt_exercice(
 
   let solution = exercice_title <> ordered_list(questions_solutions)
 
-  exercice.CompiledExercice(problems: prompt, solutions: solution)
+  CompiledExercice(problems: prompt, solutions: solution)
 }
 
-pub fn generate(sheet: exercice.ExerciceSheet) -> String {
+pub fn generate(sheet: ExerciceSheet) -> String {
   let compiled_exercices =
     list.index_map(sheet.exercices, solution_and_prompt_exercice)
 

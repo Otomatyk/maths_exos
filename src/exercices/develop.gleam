@@ -1,4 +1,4 @@
-import exercice
+import exercices/types.{type Exercice, Exercice, Question}
 import expr/distributivity
 import expr/expr.{Var, add, multiply}
 import expr/order
@@ -15,7 +15,7 @@ const default_develop_prompt = "Developper les expressions suivantes"
 pub fn first_degree_exercice(
   max_terms_number max_terms: Int,
   random_numbers_fn generate_number: random_numbers.GenerateIntFn,
-) -> exercice.Exercice {
+) -> Exercice {
   let first_degree_question = fn(i: Int) {
     let assert [first_factor, ..terms] =
       [generate_number(), generate_number()]
@@ -30,13 +30,13 @@ pub fn first_degree_exercice(
 
     let starts = int_to_uppercase_letter(i) <> " = "
 
-    exercice.Question(
+    Question(
       prompt: starts <> { multiply(factors) |> latex.from_expr() },
       solution: starts <> latex.from_expr(developped),
     )
   }
 
-  exercice.Exercice(
+  Exercice(
     prompt: default_develop_prompt,
     questions: list.range(0, 4) |> list.map(first_degree_question),
   )
@@ -44,7 +44,7 @@ pub fn first_degree_exercice(
 
 pub fn second_degree_exercice(
   random_numbers_fn generate_number: random_numbers.GenerateIntFn,
-) -> exercice.Exercice {
+) -> Exercice {
   let second_degree_question = fn(i: Int) {
     let factors = [
       add(
@@ -63,13 +63,13 @@ pub fn second_degree_exercice(
 
     let starts = int_to_uppercase_letter(i) <> " = "
 
-    exercice.Question(
+    Question(
       prompt: starts <> { multiply(factors) |> latex.from_expr() },
       solution: starts <> latex.from_expr(developped),
     )
   }
 
-  exercice.Exercice(
+  Exercice(
     prompt: default_develop_prompt,
     questions: list.range(0, 4) |> list.map(second_degree_question),
   )

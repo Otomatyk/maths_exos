@@ -1,4 +1,4 @@
-import exercice
+import exercices/types.{type ExerciceSheet}
 import expr/expr
 import gleam/list
 import gleam/string
@@ -11,7 +11,7 @@ pub fn from_expr(expr: expr.Expr) -> String {
 }
 
 /// Generate the latex document of an `exercice.ExerciceSheet`, wrapped with `$`
-pub fn from_exercice_sheet(sheet: exercice.ExerciceSheet) -> String {
+pub fn from_exercice_sheet(sheet: ExerciceSheet) -> String {
   latex_exercice_sheet.generate(sheet)
 }
 

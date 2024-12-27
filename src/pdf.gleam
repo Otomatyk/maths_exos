@@ -21,7 +21,7 @@ fn generate_file_uuid() -> FileUUID {
 
 pub fn latex_to_pdf(latex_src: String) -> Result(Nil, simplifile.FileError) {
   use cwd <- result.try(simplifile.current_directory())
-  let cwd = cwd <> "/output"
+  let cwd = cwd <> "/tmp/output"
 
   case simplifile.is_directory(cwd) {
     Error(err) -> Error(err)

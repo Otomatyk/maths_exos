@@ -15,13 +15,10 @@ const new_context_priority = -999
 type StackElement =
   #(Expr, Int, Int)
 
-pub fn generate(expr: Expr) -> String {
-  "$"
-  <> {
-    latex(placeholder(0), [#(expr, 0, new_context_priority)], 1)
-    |> string.replace(each: "+ -", with: "- ")
-  }
-  <> "$"
+/// Generate the latex code of an expression, use `latex/latex_utils.math` to wrap with `$`
+pub fn from(expr: Expr) -> String {
+  latex(placeholder(0), [#(expr, 0, new_context_priority)], 1)
+  |> string.replace(each: "+ -", with: "- ")
 }
 
 fn placeholder(id: Int) -> String {

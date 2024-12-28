@@ -3,7 +3,7 @@ import exercices/types.{ExerciceSheet}
 
 // import expr/expr.{Number, Var, add, multiply}
 import gleam/io
-import latex/latex
+import latex/latex_exercice_sheet
 import pdf
 import random_numbers.{non_null_positive_int, non_null_relatif_int}
 
@@ -11,7 +11,7 @@ pub fn main() {
   io.println("Running...")
 
   exercice_sheet()
-  |> latex.from_exercice_sheet()
+  |> latex_exercice_sheet.from()
   |> pdf.latex_to_pdf()
   |> io.debug()
 }

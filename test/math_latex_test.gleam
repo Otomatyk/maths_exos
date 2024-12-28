@@ -1,15 +1,15 @@
 import expr/expr.{Exponenation, Number, Var, add, multiply}
 import gleeunit
 import gleeunit/should.{equal}
-import latex/latex
+import latex/latex_expr
 
 pub fn main() {
   gleeunit.main()
 }
 
 fn latex_equal(expr: expr.Expr, latex: String) -> Nil {
-  latex.from_expr(expr)
-  |> equal("$" <> latex <> "$")
+  latex_expr.from(expr)
+  |> equal(latex)
 }
 
 pub fn litteral_test() {

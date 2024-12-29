@@ -1,9 +1,17 @@
+import gleam/int
 import gleam/list
 import gleam/string
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 const var_names = "xyzabcdefigjklmnophsturvqw"
+
+pub fn random_bool() -> Bool {
+  case int.random(2) {
+    0 -> False
+    _ -> True
+  }
+}
 
 pub fn eq(a: a, b: a) -> Bool {
   a == b

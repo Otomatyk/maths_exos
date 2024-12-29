@@ -1,10 +1,13 @@
-import exercices/types.{type Exercice, Equality, EqualityListExercice}
+import exercices/types.{
+  type Exercice, Equality, EqualityListExercice, TrueOrFalseExercice,
+}
 import expr/distributivity
 import expr/expr.{Var, add, multiply}
 import expr/order
 import expr/simplify
-
 import gleam/list
+import latex/latex_expr
+import latex/latex_utils.{math}
 import random_numbers
 import utils.{int_to_var}
 
@@ -67,4 +70,41 @@ pub fn second_degree_exercice(
     prompt: default_develop_prompt,
     questions: list.range(0, 4) |> list.map(second_degree_question),
   )
+}
+
+pub fn true_or_false_first_dregree_exercice(
+  max_terms_number max_terms: Int,
+  random_numbers_fn generate_number: random_numbers.GenerateIntFn,
+) -> Exercice {
+  let question = fn(_) {
+    let truthfullness = utils.random_bool()
+
+    let assert [first_factor, ..terms] =
+      [generate_number(), generate_number()]
+      |> list.append(
+        list.range(0, max_terms - 2) |> list.map(int_to_var) |> list.map(Var),
+      )
+      |> list.shuffle()
+
+    let assert [false_first_factor, ..false_terms] = case truthfullness {
+      True -> [first_factor, ..terms]
+
+      False -> [first_factor, ..terms] |> list.shuffle()
+    }
+
+    let false_factors = [false_first_factor, add(false_terms)]
+    let true_factors = [first_factor, add(terms)]
+
+    let assert Ok(developped) = distributivity.develop(false_factors)
+    let developped = developped |> simplify.deep_expr()
+
+    #(
+      { multiply(true_factors) |> latex_expr.from() |> math() }
+        <> " = "
+        <> { developped |> latex_expr.from() |> math() },
+      truthfullness,
+    )
+  }
+
+  TrueOrFalseExercice(affirmations: list.range(0, 4) |> list.map(question))
 }

@@ -1,5 +1,5 @@
 import exercices/develop
-import exercices/types.{ExerciceSheet}
+import exercices/types.{ExerciceSheet, QuestionsExercice}
 
 // import expr/expr.{Number, Var, add, multiply}
 import gleam/io
@@ -23,5 +23,14 @@ fn exercice_sheet() {
       random_numbers_fn: non_null_positive_int,
       max_terms_number: 3,
     ),
+    develop.true_or_false_first_dregree_exercice(
+      random_numbers_fn: non_null_positive_int,
+      max_terms_number: 2,
+    ),
+    QuestionsExercice("Repondez auix questions", [
+      types.Question("Az = Bg ?", "oui"),
+      types.Question("Az = Moche ?", "non"),
+      types.Question("Az = Pgm ?", "oui"),
+    ]),
   ])
 }

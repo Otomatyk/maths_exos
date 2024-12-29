@@ -19,6 +19,8 @@ pub type Exercice {
   /// Each equality is in the format $A = ...$
   /// The left part will be added automaticly (don't add $A =$)
   EqualityListExercice(prompt: String, questions: List(Equality))
+
+  TrueOrFalseExercice(affirmations: List(#(String, Bool)))
 }
 
 pub type ExerciceSheet {

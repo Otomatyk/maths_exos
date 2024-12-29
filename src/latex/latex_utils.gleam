@@ -27,6 +27,26 @@ pub fn math(inner: String) -> String {
   "$" <> inner <> "$"
 }
 
+fn vspace(unit) {
+  "\n\\vspace{" <> unit_to_string(unit) <> "}\n"
+}
+
+pub fn small_vspace() {
+  vspace(Mm(2.0))
+}
+
+pub fn medium_vspace() {
+  vspace(Mm(4.0))
+}
+
+pub fn large_vspace() {
+  vspace(Mm(8.0))
+}
+
+pub fn extra_large_vspace() {
+  vspace(Mm(12.0))
+}
+
 pub fn table(
   rows: List(List(String)),
   pattern: String,

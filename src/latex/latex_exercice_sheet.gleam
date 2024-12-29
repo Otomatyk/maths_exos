@@ -34,20 +34,15 @@ fn exercice_title(idx: Int) -> String {
 }
 
 fn equality_list_exercice(prompt, equalities: List(types.Equality)) {
-  let prompt =
-    prompt
-    <> medium_vspace()
-    <> par
-    <> {
-      equalities
-      |> list.index_map(fn(eq, eq_idx) {
-        utils.int_to_uppercase_letter(eq_idx)
-        <> " = $"
-        <> latex_expr.from(eq.initial_expr)
-        <> "$"
-      })
-      |> string.join(par <> small_vspace())
-    }
+  let body =
+    equalities
+    |> list.index_map(fn(eq, eq_idx) {
+      utils.int_to_uppercase_letter(eq_idx)
+      <> " = $"
+      <> latex_expr.from(eq.initial_expr)
+      <> "$"
+    })
+    |> string.join(par <> small_vspace())
 
   let solutions =
     equalities
@@ -64,27 +59,22 @@ fn equality_list_exercice(prompt, equalities: List(types.Equality)) {
     })
     |> string.join("\n")
 
-  #(prompt, solutions)
+  #(prompt, body, solutions)
 }
 
 fn questions_exercice(prompt, questions: List(types.Question)) {
-  let prompt =
-    prompt
-    <> medium_vspace()
-    <> par
-    <> {
-      questions
-      |> list.map(fn(q) { q.prompt })
-      |> ordered_list()
-    }
+  let body =
+    questions
+    |> list.map(fn(q) { q.prompt })
+    |> ordered_list()
 
   let solutions = questions |> list.map(fn(q) { q.solution }) |> ordered_list()
 
-  #(prompt, solutions)
+  #(prompt, body, solutions)
 }
 
 fn true_or_false_exercice(affirmations) {
-  let prompt =
+  let body =
     affirmations
     |> list.map(fn(affirmation_tuple) {
       let #(affirmation, _) = affirmation_tuple
@@ -114,16 +104,14 @@ fn true_or_false_exercice(affirmations) {
     |> latex_utils.table("l l l", row_divider: False, padding_factor: 1.1)
 
   #(
-    "Pour chaque affirmaton, sans justification entourer le V si elle est vraie sinon entourer le F"
-      <> medium_vspace()
-      <> par
-      <> prompt,
+    "Pour chaque affirmaton, sans justification entourer le V si elle est vraie sinon entourer le F",
+    body,
     solutions,
   )
 }
 
 fn solution_and_prompt_exercice(ex: Exercice, idx: Int) -> CompiledExercice {
-  let #(prompt, solution) = case ex {
+  let #(prompt, body, solution) = case ex {
     types.EqualityListExercice(prompt, equalities) ->
       equality_list_exercice(prompt, equalities)
 
@@ -137,7 +125,7 @@ fn solution_and_prompt_exercice(ex: Exercice, idx: Int) -> CompiledExercice {
   let exercice_title = exercice_title(idx + 1)
 
   CompiledExercice(
-    problems: exercice_title <> prompt,
+    problems: exercice_title <> prompt <> medium_vspace() <> par <> body,
     solutions: exercice_title <> solution,
   )
 }

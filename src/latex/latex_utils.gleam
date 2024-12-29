@@ -13,10 +13,11 @@ fn unit_to_string(unit: LatexUnit) -> String {
 }
 
 pub fn ordered_list(list: List(String)) -> String {
-  "\\begin{enumerate}\n"
-  <> list.map(list, fn(s) { "    \\item \\hspace{5pt} " <> s })
-  |> string.join("\n")
-  <> "\n\\end{enumerate}"
+  begin("enumerate", {
+    list
+    |> list.map(fn(ele) { "\\item \\hspace{5pt} " <> ele })
+    |> string.join("\n")
+  })
 }
 
 pub fn begin(env: String, inner: String) -> String {

@@ -1,3 +1,4 @@
+import gleam/float
 import gleam/list
 import gleam/string
 
@@ -9,9 +10,35 @@ pub fn ordered_list(list: List(String)) -> String {
 }
 
 pub fn begin(env: String, inner: String) -> String {
-  "\\begin{" <> env <> "}\n" <> inner <> "\\end{" <> env <> "}"
+  "\\begin{" <> env <> "}\n" <> inner <> "\n\\end{" <> env <> "}"
 }
 
 pub fn math(inner: String) -> String {
   "$" <> inner <> "$"
+}
+
+pub fn table(
+  rows: List(List(String)),
+  pattern: String,
+  row_divider row_divider: Bool,
+  padding_factor padding_factor: Float,
+) -> String {
+  let row_divider = case row_divider {
+    True -> " \\hline"
+    False -> ""
+  }
+
+  "{\\renewcommand{\\arraystretch}{"
+  <> float.to_string(padding_factor)
+  <> "}"
+  <> begin("tabular", {
+    "{ "
+    <> pattern
+    <> " } \n"
+    <> rows
+    |> list.map(string.join(_, " & "))
+    |> list.map(string.append(_, "\\\\"))
+    |> string.join(row_divider <> "\n")
+  })
+  <> "}"
 }

@@ -2,6 +2,16 @@ import gleam/float
 import gleam/list
 import gleam/string
 
+pub type LatexUnit {
+  Mm(Float)
+}
+
+fn unit_to_string(unit: LatexUnit) -> String {
+  case unit {
+    Mm(n) -> float.to_string(n) <> "mm"
+  }
+}
+
 pub fn ordered_list(list: List(String)) -> String {
   "\\begin{enumerate}\n"
   <> list.map(list, fn(s) { "    \\item \\hspace{5pt} " <> s })

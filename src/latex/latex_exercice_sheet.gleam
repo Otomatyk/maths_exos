@@ -135,8 +135,10 @@ pub fn from(sheet: types.ExerciceSheet) -> String {
   let compiled_exercices =
     list.index_map(sheet.exercices, solution_and_prompt_exercice)
 
-  let solutions = list.map(compiled_exercices, fn(i) { i.solutions })
-  let problems = list.map(compiled_exercices, fn(i) { i.problems })
+  let #(problems, solutions) =
+    compiled_exercices
+    |> list.map(fn(i) { #(i.problems, i.solutions) })
+    |> list.unzip()
 
   documentclass
   <> par

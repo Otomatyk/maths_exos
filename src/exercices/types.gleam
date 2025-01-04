@@ -21,6 +21,8 @@ pub type Exercice {
   EqualityListExercice(prompt: String, questions: List(Equality))
 
   TrueOrFalseExercice(affirmations: List(#(String, Bool)))
+
+  MapExercice(prompt: String, pairs: List(#(String, String)))
 }
 
 pub type ExerciceSheet {

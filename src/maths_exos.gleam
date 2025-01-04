@@ -27,6 +27,10 @@ fn exercice_sheet() {
       random_numbers_fn: non_null_positive_int,
       max_terms_number: 2,
     ),
+    develop.map_exercice(
+      random_numbers_fn: non_null_positive_int,
+      max_terms_number: 2,
+    ),
     QuestionsExercice("Repondez auix questions", [
       types.Question("Az = Bg ?", "oui"),
       types.Question("Az = Moche ?", "non"),

@@ -28,6 +28,22 @@ pub fn math(inner: String) -> String {
   "$" <> inner <> "$"
 }
 
+pub fn bullet() {
+  "$\\bullet$"
+}
+
+pub fn rightarrow() {
+  "$\\rightarrow$"
+}
+
+fn hspace(unit) {
+  "\n\\hspace{" <> unit_to_string(unit) <> "}"
+}
+
+pub fn extra_large_hspace() {
+  hspace(Mm(12.0))
+}
+
 fn vspace(unit) {
   "\n\\vspace{" <> unit_to_string(unit) <> "}"
 }
@@ -72,4 +88,10 @@ pub fn table(
     |> string.join(row_divider <> "\n")
   })
   <> "}"
+}
+
+pub fn table_map(pairs: List(#(String, String))) -> String {
+  pairs
+  |> list.map(fn(pair) { [pair.0, rightarrow(), pair.1] })
+  |> table("l c l", row_divider: False, padding_factor: 1.1)
 }

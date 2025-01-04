@@ -1,5 +1,6 @@
 import exercices/types.{
-  type Exercice, Equality, EqualityListExercice, TrueOrFalseExercice,
+  type Exercice, Equality, EqualityListExercice, MapExercice,
+  TrueOrFalseExercice,
 }
 import expr/distributivity
 import expr/expr.{Var, add, multiply}
@@ -107,4 +108,32 @@ pub fn true_or_false_first_dregree_exercice(
   }
 
   TrueOrFalseExercice(affirmations: list.range(0, 4) |> list.map(question))
+}
+
+pub fn map_exercice(
+  max_terms_number max_terms: Int,
+  random_numbers_fn generate_number: random_numbers.GenerateIntFn,
+) {
+  let map_pairs = fn(_) {
+    let assert [first_factor, ..terms] =
+      [generate_number(), generate_number()]
+      |> list.append(
+        list.range(0, max_terms - 2) |> list.map(int_to_var) |> list.map(Var),
+      )
+      |> list.shuffle()
+
+    let factors = [first_factor, add(terms)]
+    let assert Ok(developped_1) = distributivity.develop(factors)
+    let developped_2 = developped_1 |> simplify.deep_expr()
+
+    #(
+      multiply(factors) |> latex_expr.from() |> math(),
+      developped_2 |> latex_expr.from() |> math(),
+    )
+  }
+
+  MapExercice(
+    prompt: "Relier chaque produit à sa version developpée",
+    pairs: list.range(0, 4) |> list.map(map_pairs),
+  )
 }

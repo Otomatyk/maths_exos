@@ -7,6 +7,7 @@ import expr/expr.{Var, add, multiply}
 import expr/order
 import expr/simplify
 import gleam/list
+import gleam/option
 import latex/latex_expr
 import latex/latex_utils.{math}
 import random_numbers
@@ -99,11 +100,25 @@ pub fn true_or_false_first_dregree_exercice(
     let assert Ok(developped) = distributivity.develop(false_factors)
     let developped = developped |> simplify.deep_expr()
 
+    let assert Ok(developped_true) = distributivity.develop(true_factors)
+    let developped_true = developped_true |> simplify.deep_expr()
+
+    let true_factors_math =
+      multiply(true_factors) |> latex_expr.from() |> math()
+
     #(
-      { multiply(true_factors) |> latex_expr.from() |> math() }
+      { true_factors_math }
         <> " = "
         <> { developped |> latex_expr.from() |> math() },
-      truthfullness,
+      case truthfullness {
+        True -> option.None
+        False ->
+          option.Some(
+            true_factors_math
+            <> " = "
+            <> developped_true |> latex_expr.from() |> math(),
+          )
+      },
     )
   }
 

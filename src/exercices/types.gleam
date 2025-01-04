@@ -1,4 +1,5 @@
 import expr/expr.{type Expr}
+import gleam/option.{type Option}
 
 /// An exercice after being compiled to latex
 pub type CompiledExercice {
@@ -20,7 +21,9 @@ pub type Exercice {
   /// The left part will be added automaticly (don't add $A =$)
   EqualityListExercice(prompt: String, questions: List(Equality))
 
-  TrueOrFalseExercice(affirmations: List(#(String, Bool)))
+  /// The second element being None means the affirmation's true
+  /// The String in the Some represents the correction (meaning the affirmation's false)
+  TrueOrFalseExercice(affirmations: List(#(String, Option(String))))
 
   MapExercice(prompt: String, pairs: List(#(String, String)))
 }

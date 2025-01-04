@@ -1,6 +1,7 @@
 import exercices/types.{type CompiledExercice, type Exercice, CompiledExercice}
 import gleam/int
 import gleam/list
+import gleam/option
 import gleam/pair
 import gleam/string
 import latex/latex_expr
@@ -93,10 +94,10 @@ fn true_or_false_exercice(affirmations) {
 
   let solutions =
     affirmations
-    |> list.map(pair.map_second(_, fn(truthfullness) {
-      case truthfullness {
-        True -> "Vrai"
-        False -> "Faux"
+    |> list.map(pair.map_second(_, fn(correction) {
+      case correction {
+        option.None -> "Vrai"
+        option.Some(correction) -> "Faux ; " <> correction
       }
     }))
     |> latex_utils.table_map()

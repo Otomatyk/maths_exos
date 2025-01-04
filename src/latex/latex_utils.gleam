@@ -94,11 +94,8 @@ pub fn table(
   "\n\n{\\renewcommand{\\arraystretch}{"
   <> float.to_string(padding_factor)
   <> "}"
-  <> begin("tabular", {
-    "{ "
-    <> pattern
-    <> " } \n"
-    <> rows
+  <> begin_param("tabular", pattern, {
+    rows
     |> list.map(string.join(_, " & "))
     |> list.map(string.append(_, "\\\\"))
     |> string.join(row_divider <> "\n")

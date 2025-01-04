@@ -6,7 +6,7 @@ import gleam/string
 import latex/latex_expr
 import latex/latex_utils.{
   begin, bullet, extra_large_hspace, large_vspace, medium_vspace, ordered_list,
-  par, small_vspace,
+  par, small_vspace, unbreakable_block,
 }
 import utils
 
@@ -125,14 +125,18 @@ pub fn compile_exercice(ex: Exercice, idx: Int) -> CompiledExercice {
   let exercice_title = exercice_title(idx + 1)
 
   CompiledExercice(
-    problems: exercice_title
+    problems: unbreakable_block({
+      exercice_title
       <> par()
       <> prompt
       <> medium_vspace()
       <> par()
       <> body
       <> large_vspace()
-      <> par(),
-    solutions: exercice_title <> solution <> large_vspace() <> par(),
+      <> par()
+    }),
+    solutions: unbreakable_block(
+      exercice_title <> solution <> large_vspace() <> par(),
+    ),
   )
 }

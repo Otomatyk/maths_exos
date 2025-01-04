@@ -24,6 +24,18 @@ pub fn begin(env: String, inner: String) -> String {
   "\n\\begin{" <> env <> "}\n" <> inner <> "\n\\end{" <> env <> "}"
 }
 
+pub fn begin_param(env: String, param: String, inner: String) {
+  "\n\\begin{"
+  <> env
+  <> "}{"
+  <> param
+  <> "}\n"
+  <> inner
+  <> "\n\\end{"
+  <> env
+  <> "}"
+}
+
 pub fn math(inner: String) -> String {
   "$" <> inner <> "$"
 }
@@ -98,4 +110,8 @@ pub fn table_map(pairs: List(#(String, String))) -> String {
   pairs
   |> list.map(fn(pair) { [pair.0, rightarrow(), pair.1] })
   |> table("l c l", row_divider: False, padding_factor: 1.1)
+}
+
+pub fn unbreakable_block(inner: String) {
+  begin_param("minipage", "\\linewidth", inner)
 }

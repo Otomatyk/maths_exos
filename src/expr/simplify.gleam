@@ -1,4 +1,3 @@
-import expr/distributivity
 import expr/expr.{type Expr, Number}
 import gleam/bool
 import gleam/list
@@ -9,7 +8,7 @@ fn simplify_vars(factors: expr.Factors, acc: List(Expr)) -> expr.Factors {
 
   case curr {
     expr.Var(_) -> {
-      let #(are_curr, arent_curr) = list.partition(factors, fn(i) { i == curr })
+      let #(are_curr, arent_curr) = list.partition(factors, utils.eq(curr, _))
 
       case are_curr {
         [_] -> simplify_vars(arent_curr, [curr, ..acc])

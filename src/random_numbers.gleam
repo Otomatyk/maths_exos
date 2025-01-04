@@ -1,5 +1,7 @@
 import expr/expr.{type Expr, Number}
 import gleam/int
+import gleam/list
+import utils
 
 /// This number is inclusive
 const largest_number = 11
@@ -8,17 +10,41 @@ const largest_number = 11
 pub type GenerateIntFn =
   fn() -> Expr
 
-/// Generate a Number included in the interval ]0, MAX]
-pub fn non_null_positive_int() -> Expr {
-  Number(int.random(largest_number) + 1)
+pub type GenerateNumberFeature {
+  Negative
+  NonNull
+  NonPositiveOne
+  NonNegativeOne
 }
 
-/// Generate a Number included in the interval [-MAX, MAX] / {0}
-pub fn non_null_relatif_int() -> Expr {
-  let n = int.random(largest_number * 2 + 1) - largest_number
+fn generate_number(features: List(GenerateNumberFeature)) -> Int {
+  let n = int.random(largest_number)
 
-  case n {
-    0 -> non_null_relatif_int()
-    _ -> Number(n)
+  let n = case list.contains(features, Negative), utils.random_bool() {
+    False, _ | True, False -> n
+    True, True -> -n
   }
+
+  let n = case list.contains(features, NonNull) {
+    True if n == 0 -> generate_number(features)
+    _ -> n
+  }
+
+  let n = case list.contains(features, NonPositiveOne) {
+    True if n == 1 -> generate_number(features)
+    _ -> n
+  }
+
+  let n = case list.contains(features, NonNegativeOne) {
+    True if n == -1 -> generate_number(features)
+    _ -> n
+  }
+
+  n
+}
+
+pub fn int_number_generator(
+  features: List(GenerateNumberFeature),
+) -> GenerateIntFn {
+  fn() { Number(generate_number(features)) }
 }

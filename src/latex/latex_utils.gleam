@@ -28,6 +28,10 @@ pub fn math(inner: String) -> String {
   "$" <> inner <> "$"
 }
 
+pub fn par() {
+  "\n\n"
+}
+
 pub fn bullet() {
   "$\\bullet$"
 }

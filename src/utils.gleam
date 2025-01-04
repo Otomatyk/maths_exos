@@ -1,3 +1,4 @@
+import gleam/bool
 import gleam/int
 import gleam/list
 import gleam/string
@@ -18,7 +19,7 @@ pub fn eq(a: a, b: a) -> Bool {
 }
 
 fn list_eq(list_a: List(a), list_b: List(a), eq_fn: fn(a, a) -> Bool) {
-  use <- return_if(list.length(list_a) != list.length(list_b), False)
+  use <- bool.guard(list.length(list_a) != list.length(list_b), False)
 
   list.map2(list_a, list_b, eq_fn)
   |> list.all(eq(_, True))
@@ -34,13 +35,6 @@ pub fn int_to_uppercase_letter(n: Int) -> String {
 /// If `n` exceeds 26, the cycle re-starts
 pub fn int_to_var(n: Int) -> String {
   string.slice(var_names, { n % 26 }, 1)
-}
-
-pub fn return_if(condition: Bool, value: a, otherwise: fn() -> a) -> a {
-  case condition {
-    True -> value
-    False -> otherwise()
-  }
 }
 
 /// Used to simplify a recursive function

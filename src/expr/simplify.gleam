@@ -1,7 +1,8 @@
 import expr/distributivity
 import expr/expr.{type Expr, Number}
+import gleam/bool
 import gleam/list
-import utils.{first_or_return_acc, return_if}
+import utils.{first_or_return_acc}
 
 fn simplify_vars(factors: expr.Factors, acc: List(Expr)) -> expr.Factors {
   use curr <- first_or_return_acc(factors, acc)
@@ -28,7 +29,7 @@ fn simplify_vars(factors: expr.Factors, acc: List(Expr)) -> expr.Factors {
 }
 
 fn simplify_factors(factors: expr.Factors) -> Expr {
-  use <- return_if(list.contains(factors, Number(0)), Number(0))
+  use <- bool.guard(list.contains(factors, Number(0)), Number(0))
 
   let without_numbers = simplify_vars(factors, [])
 
@@ -71,7 +72,7 @@ fn simplify_terms(terms: expr.Terms) -> Expr {
     terms
     |> list.unique()
     |> list.filter_map(fn(term) {
-      use <- utils.return_if(expr.is_number(term), Error(Nil))
+      use <- bool.guard(expr.is_number(term), Error(Nil))
 
       let count = list.count(terms, fn(i) { i == term })
 

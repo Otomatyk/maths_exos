@@ -1,4 +1,5 @@
 import expr/expr.{type Expr, add, multiply}
+import gleam/bool
 import gleam/list
 import utils
 
@@ -30,7 +31,7 @@ pub fn factor_with_one(terms: expr.Terms) -> Result(Expr, Nil) {
     |> list.flatten()
     |> list.unique()
 
-  use <- utils.return_if(common_factors == [], Error(Nil))
+  use <- bool.guard(common_factors == [], Error(Nil))
 
   Ok(
     common_factors

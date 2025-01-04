@@ -21,7 +21,7 @@ pub fn ordered_list(list: List(String)) -> String {
 }
 
 pub fn begin(env: String, inner: String) -> String {
-  "\\begin{" <> env <> "}\n" <> inner <> "\n\\end{" <> env <> "}"
+  "\n\\begin{" <> env <> "}\n" <> inner <> "\n\\end{" <> env <> "}"
 }
 
 pub fn math(inner: String) -> String {
@@ -29,7 +29,7 @@ pub fn math(inner: String) -> String {
 }
 
 fn vspace(unit) {
-  "\n\\vspace{" <> unit_to_string(unit) <> "}\n"
+  "\n\\vspace{" <> unit_to_string(unit) <> "}"
 }
 
 pub fn small_vspace() {
@@ -59,7 +59,7 @@ pub fn table(
     False -> ""
   }
 
-  "{\\renewcommand{\\arraystretch}{"
+  "\n\n{\\renewcommand{\\arraystretch}{"
   <> float.to_string(padding_factor)
   <> "}"
   <> begin("tabular", {

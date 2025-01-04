@@ -21,16 +21,11 @@ const preambul = "\\usepackage{lmodern}
 \\usepackage[legalpaper, portrait, left=1cm, top=2cm]{geometry}"
 
 fn sheet_title(title: String) -> String {
-  "\\textbf{\\Huge " <> title <> " }" <> extra_large_vspace()
+  "\n\\textbf{\\Huge " <> title <> " }" <> extra_large_vspace() <> par
 }
 
 fn exercice_title(idx: Int) -> String {
-  par
-  <> "\\textbf{\\Large Exercice "
-  <> int.to_string(idx)
-  <> "}"
-  <> small_vspace()
-  <> par
+  "\n\\textbf{\\Large Exercice " <> int.to_string(idx) <> "}" <> small_vspace()
 }
 
 fn equality_list_exercice(prompt, equalities: List(types.Equality)) {
@@ -68,7 +63,10 @@ fn questions_exercice(prompt, questions: List(types.Question)) {
     |> list.map(fn(q) { q.prompt })
     |> ordered_list()
 
-  let solutions = questions |> list.map(fn(q) { q.solution }) |> ordered_list()
+  let solutions =
+    questions
+    |> list.map(fn(q) { q.solution })
+    |> ordered_list()
 
   #(prompt, body, solutions)
 }
@@ -125,8 +123,15 @@ fn solution_and_prompt_exercice(ex: Exercice, idx: Int) -> CompiledExercice {
   let exercice_title = exercice_title(idx + 1)
 
   CompiledExercice(
-    problems: exercice_title <> prompt <> medium_vspace() <> par <> body,
-    solutions: exercice_title <> solution,
+    problems: exercice_title
+      <> par
+      <> prompt
+      <> medium_vspace()
+      <> par
+      <> body
+      <> large_vspace()
+      <> par,
+    solutions: exercice_title <> solution <> large_vspace() <> par,
   )
 }
 
@@ -141,19 +146,16 @@ pub fn from(sheet: types.ExerciceSheet) -> String {
     |> list.unzip()
 
   documentclass
-  <> par
   <> preambul
-  <> par
   <> begin("document", {
-    par
-    <> sheet_title(sheet.title)
-    <> string.join(problems, large_vspace())
+    sheet_title(sheet.title)
+    <> string.join(problems, "\n")
     <> par
-    <> "\\newpage
-\\textbf{\\Huge Solutions}"
+    <> "\\newpage"
+    <> "\n\\textbf{\\Huge Solutions}"
     <> large_vspace()
     <> par
-    <> string.join(solutions, large_vspace())
+    <> string.join(solutions, "\n")
     <> par
   })
 }

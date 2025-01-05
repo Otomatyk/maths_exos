@@ -6,8 +6,8 @@ import gleam/pair
 import gleam/string
 import latex/latex_expr
 import latex/latex_utils.{
-  begin, bullet, extra_large_hspace, large_vspace, medium_vspace, ordered_list,
-  par, small_vspace, unbreakable_block,
+  begin, bullet, extra_large_hspace, extra_large_vspace, large_vspace,
+  medium_vspace, ordered_list, par, small_vspace, unbreakable_block,
 }
 import utils
 
@@ -59,7 +59,7 @@ fn equality_list_exercice(prompt, equalities: List(types.Equality)) {
         }
       })
     })
-    |> string.join("\n")
+    |> string.join("")
 
   #(prompt, body, solutions)
 }
@@ -133,7 +133,7 @@ pub fn compile_exercice(ex: Exercice, idx: Int) -> CompiledExercice {
       <> medium_vspace()
       <> par()
       <> body
-      <> large_vspace()
+      <> extra_large_vspace()
       <> par()
     }),
     solutions: unbreakable_block(

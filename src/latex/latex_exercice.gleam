@@ -94,12 +94,14 @@ fn true_or_false_exercice(affirmations) {
 
   let solutions =
     affirmations
-    |> list.map(pair.map_second(_, fn(correction) {
-      case correction {
-        option.None -> "Vrai"
-        option.Some(correction) -> "Faux ; " <> correction
-      }
-    }))
+    |> list.map(
+      pair.map_second(_, fn(correction) {
+        case correction {
+          option.None -> "Vrai"
+          option.Some(correction) -> "Faux ; " <> correction
+        }
+      }),
+    )
     |> latex_utils.table_map()
 
   #(

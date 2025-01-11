@@ -1,5 +1,7 @@
-import expr/expr.{Number, Var, add, multiply}
-import expr/simplify
+import expr/expr.{Exponenation, Number, Var, add, multiply}
+import expr/simplify/simplify.{
+  simplify_exponentation, simplify_factors, simplify_terms,
+}
 import gleeunit
 import test_utils.{equal_expr}
 
@@ -7,102 +9,153 @@ pub fn main() {
   gleeunit.main()
 }
 
-fn simplified_equal(expr: expr.Expr, excepted: expr.Expr) -> Nil {
-  expr
-  |> simplify.expr()
-  |> equal_expr(excepted)
+pub fn simplify_exponentation_test() {
+  simplify_exponentation(Var("x"), Number(3))
+  |> equal_expr(Exponenation(Var("x"), Number(3)))
+
+  simplify_exponentation(Var("x"), Number(1))
+  |> equal_expr(Var("x"))
+
+  simplify_exponentation(Var("x"), Number(0))
+  |> equal_expr(Number(1))
 }
 
-pub fn simplify_multiplication_test() {
-  // Zero
-  multiply([Var("x"), Number(0), Number(10)])
-  |> simplified_equal(Number(0))
+pub fn simplify_factors_test() {
+  [Number(0)]
+  |> simplify_factors()
+  |> equal_expr(Number(0))
 
-  multiply([Number(0)])
-  |> simplified_equal(Number(0))
+  [Number(0), Var("x"), Number(1)]
+  |> simplify_factors()
+  |> equal_expr(Number(0))
 
-  // Constant -> Product
-  multiply([Number(1)])
-  |> simplified_equal(Number(1))
+  [Number(1), Var("x"), Number(1)]
+  |> simplify_factors()
+  |> equal_expr(Var("x"))
 
-  multiply([Var("x")])
-  |> simplified_equal(Var("x"))
+  [Var("x")]
+  |> simplify_factors()
+  |> equal_expr(Var("x"))
 
-  multiply([Number(1), Var("y"), Number(1), Number(77)])
-  |> simplified_equal(multiply([Var("y"), Number(77)]))
+  [Var("y"), Number(8), Var("x"), Number(5)]
+  |> simplify_factors()
+  |> equal_expr(multiply([Number(40), Var("y"), Var("x")]))
 
-  multiply([Number(5), Number(10)])
-  |> simplified_equal(Number(50))
+  [Var("x"), Var("x")]
+  |> simplify_factors()
+  |> equal_expr(Exponenation(base: Var("x"), exp: Number(2)))
 
-  multiply([Number(-8), Var("x"), Number(5)])
-  |> simplified_equal(multiply([Var("x"), Number(-40)]))
-
-  // Vars regrouping
-
-  multiply([Var("x"), Var("x")])
-  |> simplified_equal(expr.Exponenation(base: Var("x"), exp: Number(2)))
-
-  multiply([Var("x"), Var("y"), Var("x"), Var("y")])
-  |> simplified_equal(
+  [add([Number(3), Var("y")]), Var("x"), add([Var("y"), Number(3)])]
+  |> simplify_factors()
+  |> equal_expr(
     multiply([
-      expr.Exponenation(base: Var("y"), exp: Number(2)),
-      expr.Exponenation(base: Var("x"), exp: Number(2)),
+      Exponenation(base: add([Var("y"), Number(3)]), exp: Number(2)),
+      Var("x"),
     ]),
   )
 
-  multiply([Var("x"), Number(8), Var("x"), Var("x")])
-  |> simplified_equal(
-    multiply([expr.Exponenation(base: Var("x"), exp: Number(3)), Number(8)]),
+  [
+    Number(10),
+    add([Number(3), Var("y")]),
+    Var("x"),
+    add([Var("a"), Var("b")]),
+    add([Var("b"), Var("a")]),
+    Number(8),
+    add([Var("y"), Number(3)]),
+    add([Var("b"), Var("a")]),
+  ]
+  |> simplify_factors()
+  |> equal_expr(
+    multiply([
+      Exponenation(base: add([Var("y"), Number(3)]), exp: Number(2)),
+      Exponenation(base: add([Var("b"), Var("a")]), exp: Number(3)),
+      Var("x"),
+      Number(80),
+    ]),
   )
-
-  multiply([Var("x")])
-  |> simplified_equal(Var("x"))
-
-  multiply([Var("x"), Number(10), Var("x"), Number(8)])
-  |> simplified_equal(
-    multiply([expr.Exponenation(base: Var("x"), exp: Number(2)), Number(80)]),
-  )
-
-  // Can't be more simplified
-  multiply([Number(-4), Var("x")])
-  |> simplified_equal(multiply([Var("x"), Number(-4)]))
 }
 
-pub fn simplify_addition_test() {
-  add([Number(-4), Number(8)])
-  |> simplified_equal(Number(4))
-
-  add([])
-  |> simplified_equal(add([]))
-
-  add([Number(6)])
-  |> simplified_equal(Number(6))
-
-  add([Number(4), Var("x"), Number(5)])
-  |> simplified_equal(add([Number(9), Var("x")]))
-
-  add([Var("x")])
-  |> simplified_equal(Var("x"))
-
-  add([Var("x"), Var("y")])
-  |> simplified_equal(add([Var("x"), Var("y")]))
-
-  add([Var("x"), Var("x")])
-  |> simplified_equal(multiply([Number(2), Var("x")]))
-
-  add([Var("x"), Var("x"), Var("y"), Var("y")])
-  |> simplified_equal(
-    add([multiply([Number(2), Var("x")]), multiply([Number(2), Var("y")])]),
+pub fn simplify_exponentation_factors_test() {
+  [Exponenation(Var("x"), Number(5)), Exponenation(Var("y"), Number(6))]
+  |> simplify_factors()
+  |> equal_expr(
+    multiply([
+      Exponenation(Var("x"), Number(5)),
+      Exponenation(Var("y"), Number(6)),
+    ]),
   )
 
-  add([Var("x"), Var("z"), Number(4), Number(8), Var("y"), Var("y")])
-  |> simplified_equal(
-    add([Number(12), Var("x"), Var("z"), multiply([Number(2), Var("y")])]),
+  [Exponenation(Var("x"), Number(5)), Exponenation(Var("y"), Number(5))]
+  |> simplify_factors()
+  |> equal_expr(Exponenation(multiply([Var("x"), Var("y")]), Number(5)))
+
+  [
+    Exponenation(add([Number(5), Var("y")]), multiply([Var("x"), Number(3)])),
+    Exponenation(Var("z"), multiply([Number(3), Var("x")])),
+    Exponenation(
+      multiply([Number(8), Number(5)]),
+      multiply([Number(3), Var("x")]),
+    ),
+  ]
+  |> simplify_factors()
+  |> equal_expr(Exponenation(
+    multiply([add([Number(5), Var("y")]), Var("z"), Number(8), Number(5)]),
+    multiply([Number(3), Var("x")]),
+  ))
+}
+
+pub fn simplify_terms_simple_test() {
+  [Number(0)]
+  |> simplify_terms()
+  |> equal_expr(Number(0))
+
+  [Number(0), Number(5), Number(-6)]
+  |> simplify_terms()
+  |> equal_expr(Number(-1))
+
+  [Var("x"), Var("x"), Var("y"), Number(10), Number(8)]
+  |> simplify_terms()
+  |> equal_expr(add([multiply([Number(2), Var("x")]), Var("y"), Number(18)]))
+
+  [Var("x"), Number(0)]
+  |> simplify_terms()
+  |> equal_expr(Var("x"))
+
+  [
+    Var("x"),
+    multiply([Var("x"), Number(6)]),
+    multiply([Var("x"), Number(10)]),
+    multiply([Number(-100), Var("x")]),
+    multiply([Number(10), Var("y")]),
+    multiply([Number(-100), Var("x"), Number(5)]),
+    Var("y"),
+    Number(42),
+    Var("z"),
+  ]
+  |> simplify_terms()
+  |> equal_expr(
+    add([
+      multiply([Number(17 - 100), Var("x")]),
+      multiply([Number(-100), Var("x"), Number(5)]),
+      multiply([Number(11), Var("y")]),
+      Number(42),
+      Var("z"),
+    ]),
   )
 
-  add([multiply([Number(3), Var("y")]), Number(5)])
-  |> simplified_equal(add([Number(5), multiply([Number(3), Var("y")])]))
+  [multiply([Var("x"), Number(3)]), multiply([Var("x"), Number(3)])]
+  |> simplify_terms()
+  |> equal_expr(multiply([Var("x"), Number(6)]))
 
-  add([multiply([Number(3), Var("y")]), multiply([Number(3), Var("y")])])
-  |> simplified_equal(multiply([Number(2), Number(3), Var("y")]))
+  [
+    multiply([Var("x"), Number(3)]),
+    Var("x"),
+    Var("x"),
+    multiply([Var("y"), Number(3)]),
+    multiply([Var("x"), Number(3)]),
+  ]
+  |> simplify_terms()
+  |> equal_expr(
+    add([multiply([Var("x"), Number(8)]), multiply([Var("y"), Number(3)])]),
+  )
 }

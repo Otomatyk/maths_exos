@@ -5,7 +5,7 @@ import exercices/types.{
 import expr/distributivity
 import expr/expr.{Var, add, multiply}
 import expr/order
-import expr/simplify
+import expr/simplify/simplify
 import gleam/list
 import gleam/option
 import latex/latex_expr
@@ -29,9 +29,10 @@ pub fn first_degree_exercice(
 
     let factors = [first_factor, add(terms)]
     let assert Ok(developped_1) = distributivity.develop(factors)
-    let developped_2 = developped_1 |> simplify.deep_expr()
+    let developped_2 = developped_1 |> simplify.total_simplify()
 
     Equality(initial_expr: multiply(factors), solution_steps: [
+      multiply(factors),
       developped_1,
       developped_2,
     ])
@@ -59,10 +60,11 @@ pub fn second_degree_exercice(
     ]
 
     let assert Ok(developped_1) = distributivity.develop(factors)
-    let assert expr.Addition(terms) = developped_1 |> simplify.deep_expr()
+    let assert expr.Addition(terms) = developped_1 |> simplify.total_simplify()
     let developped_2 = terms |> order.terms() |> expr.Addition()
 
     Equality(initial_expr: multiply(factors), solution_steps: [
+      multiply(factors),
       developped_1,
       developped_2,
     ])
@@ -98,10 +100,10 @@ pub fn true_or_false_first_dregree_exercice(
     let true_factors = [first_factor, add(terms)]
 
     let assert Ok(developped) = distributivity.develop(false_factors)
-    let developped = developped |> simplify.deep_expr()
+    let developped = developped |> simplify.total_simplify()
 
     let assert Ok(developped_true) = distributivity.develop(true_factors)
-    let developped_true = developped_true |> simplify.deep_expr()
+    let developped_true = developped_true |> simplify.total_simplify()
 
     let true_factors_math =
       multiply(true_factors) |> latex_expr.from() |> math()
@@ -139,7 +141,7 @@ pub fn map_exercice(
 
     let factors = [first_factor, add(terms)]
     let assert Ok(developped_1) = distributivity.develop(factors)
-    let developped_2 = developped_1 |> simplify.deep_expr()
+    let developped_2 = developped_1 |> simplify.total_simplify()
 
     #(
       multiply(factors) |> latex_expr.from() |> math(),

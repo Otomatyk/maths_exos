@@ -2,7 +2,6 @@ import expr/distributivity
 import expr/expr.{Number, Var, add, multiply}
 import gleeunit
 import gleeunit/should.{be_ok}
-import test_utils.{equal_expr}
 
 pub fn main() {
   gleeunit.main()
@@ -12,12 +11,13 @@ fn factorized_equal(terms: List(expr.Expr), excepted: expr.Expr) -> Nil {
   terms
   |> distributivity.factor_with_one()
   |> be_ok()
-  |> equal_expr(excepted)
+  |> should.equal(excepted)
+  // `equal_expr` wasn't used because the order matters with factorization
 }
 
 pub fn factor_with_one_test() {
   [multiply([Var("x"), Number(8)]), multiply([Var("x"), Number(4)])]
-  |> factorized_equal(multiply([Var("x"), add([Number(4), Number(8)])]))
+  |> factorized_equal(multiply([Var("x"), add([Number(8), Number(4)])]))
 
   [multiply([Var("y"), Number(4)]), multiply([Var("x"), Number(4)])]
   |> factorized_equal(multiply([Number(4), add([Var("y"), Var("x")])]))
@@ -38,7 +38,7 @@ pub fn factor_with_one_test() {
 
   [multiply([Var("x"), Number(5)]), Var("x"), multiply([Var("x"), Var("y")])]
   |> factorized_equal(
-    multiply([Var("x"), add([Number(5), Var("y"), Number(1)])]),
+    multiply([Var("x"), add([Number(5), Number(1), Var("y")])]),
   )
 
   [

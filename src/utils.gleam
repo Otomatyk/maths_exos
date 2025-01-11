@@ -38,10 +38,14 @@ pub fn int_to_var(n: Int) -> String {
 }
 
 /// Used to simplify a recursive function
-pub fn first_or_return_acc(list: List(a), acc: b, if_first: fn(a) -> b) -> b {
-  case list.first(list) {
-    Ok(curr) -> if_first(curr)
-    Error(_) -> acc
+pub fn first_or_return_acc(
+  list: List(a),
+  acc: b,
+  if_first: fn(a, List(a)) -> b,
+) -> b {
+  case list {
+    [curr, ..rest] -> if_first(curr, rest)
+    [] -> acc
   }
 }
 
@@ -50,7 +54,7 @@ pub fn equal_order_independant(
   b: List(a),
   eq_fn: fn(a, a) -> Bool,
 ) -> Bool {
-  use curr <- first_or_return_acc(a, list.is_empty(b))
+  use curr, _ <- first_or_return_acc(a, list.is_empty(b))
 
   let #(a_are_curr, a_arent_curr) = list.partition(a, eq_fn(_, curr))
   let #(b_are_curr, b_arent_curr) = list.partition(b, eq_fn(_, curr))
@@ -62,21 +66,58 @@ pub fn equal_order_independant(
 }
 
 /// To be consired as a "common", a value should be contained in ALL lists
-pub fn remove_commons(values: List(List(a))) -> List(List(a)) {
-  use curr_list <- list.map(values)
+pub fn remove_commons(
+  lists: List(List(a)),
+  eq_fn: fn(a, a) -> Bool,
+) -> List(List(a)) {
+  use curr_list <- list.map(lists)
+  use ele_of_curr <- list.filter(curr_list)
 
-  curr_list
-  |> list.filter(fn(ele_of_curr) {
-    !list.all(values, fn(other_list) { list.contains(other_list, ele_of_curr) })
-  })
+  !{
+    use other_list <- list.all(lists)
+    use other_ele <- list.any(other_list)
+    eq_fn(other_ele, ele_of_curr)
+  }
 }
 
 /// To be consired as a "common", a value should be contained in ALL lists
-pub fn only_commons(values: List(List(a))) -> List(List(a)) {
-  use curr_list <- list.map(values)
+pub fn only_commons(
+  lists: List(List(a)),
+  eq_fn: fn(a, a) -> Bool,
+) -> List(List(a)) {
+  use curr_list <- list.map(lists)
+  use ele_of_curr <- list.filter(curr_list)
+  use other_list <- list.all(lists)
+  use other_ele <- list.any(other_list)
 
-  curr_list
-  |> list.filter(fn(ele_of_curr) {
-    list.all(values, fn(other_list) { list.contains(other_list, ele_of_curr) })
-  })
+  eq_fn(other_ele, ele_of_curr)
+}
+
+/// Update only the first element that the function returns Ok
+/// # Exemples : 
+/// ```gleam
+/// map_only_first([-10, 81, 20, -3], int.square_root)
+/// // -> [-10, 9, 20, -3]
+/// ```
+pub fn map_only_first(
+  in: List(a),
+  with: fn(a) -> Result(a, Nil),
+) -> Result(List(a), Nil) {
+  map_only_first_loop(in, [], with)
+}
+
+fn map_only_first_loop(
+  remaining: List(a),
+  processed: List(a),
+  with: fn(a) -> Result(a, Nil),
+) -> Result(List(a), Nil) {
+  use curr, remaining <- first_or_return_acc(remaining, Error(Nil))
+
+  case with(curr) {
+    Error(_) -> map_only_first_loop(remaining, [curr, ..processed], with)
+
+    Ok(mapped) -> {
+      Ok(processed |> list.append([mapped, ..remaining]))
+    }
+  }
 }

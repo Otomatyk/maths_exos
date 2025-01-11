@@ -14,9 +14,17 @@ pub fn factor_with_one(terms: expr.Terms) -> Result(Expr, Nil) {
       }
     })
 
+  let common_factors =
+    factors
+    |> utils.only_commons(expr.eq)
+    |> list.flatten()
+    |> list.unique()
+
+  use <- bool.guard(common_factors == [], Error(Nil))
+
   let other_factors =
     factors
-    |> utils.remove_commons()
+    |> utils.remove_commons(expr.eq)
     |> list.map(fn(i) {
       case i {
         [ele] -> ele
@@ -24,14 +32,6 @@ pub fn factor_with_one(terms: expr.Terms) -> Result(Expr, Nil) {
         _ -> multiply(i)
       }
     })
-
-  let common_factors =
-    factors
-    |> utils.only_commons()
-    |> list.flatten()
-    |> list.unique()
-
-  use <- bool.guard(common_factors == [], Error(Nil))
 
   Ok(
     common_factors
@@ -42,9 +42,9 @@ pub fn factor_with_one(terms: expr.Terms) -> Result(Expr, Nil) {
 
 /// A dependence of `develop`
 fn terms_combinations(terms: List(List(Expr)), acc: List(Expr)) -> List(Expr) {
-  use curr_terms <- utils.first_or_return_acc(terms, acc)
+  use curr_terms, others_terms <- utils.first_or_return_acc(terms, acc)
 
-  let others_terms = list.drop(terms, 1) |> list.flatten()
+  let others_terms = list.flatten(others_terms)
 
   curr_terms
   |> list.map(fn(term) {

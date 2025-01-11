@@ -18,29 +18,38 @@ pub type Expr {
 }
 
 pub fn multiply(factors: Factors) -> Expr {
-  let factors =
-    factors
-    |> list.fold([], fn(acc, factor) {
-      case factor {
-        Multiplication(mul_factors) -> list.append(acc, mul_factors)
-        _ -> list.append(acc, [factor])
-      }
-    })
-
-  Multiplication(factors)
+  case factors {
+    [single_value] -> single_value
+    _ -> {
+      factors
+      |> list.fold([], fn(acc, factor) {
+        case factor {
+          Multiplication(mul_factors) ->
+            mul_factors |> list.reverse() |> list.append(acc)
+          _ -> [factor, ..acc]
+        }
+      })
+      |> list.reverse()
+      |> Multiplication
+    }
+  }
 }
 
 pub fn add(terms: Terms) -> Expr {
-  let terms =
-    terms
-    |> list.fold([], fn(acc, term) {
-      case term {
-        Addition(add_terms) -> list.append(acc, add_terms)
-        _ -> list.append(acc, [term])
-      }
-    })
-
-  Addition(terms)
+  case terms {
+    [single_value] -> single_value
+    _ -> {
+      terms
+      |> list.fold([], fn(acc, term) {
+        case term {
+          Addition(add_terms) -> add_terms |> list.reverse() |> list.append(acc)
+          _ -> [term, ..acc]
+        }
+      })
+      |> list.reverse()
+      |> Addition
+    }
+  }
 }
 
 pub fn squared(expr: Expr) -> Expr {

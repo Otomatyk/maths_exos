@@ -1,7 +1,6 @@
 import exercices/develop
 import exercices/types.{ExerciceSheet, QuestionsExercice}
 
-// import expr/expr.{Number, Var, add, multiply}
 import gleam/io
 import latex/latex_exercice_sheet
 import pdf
@@ -45,10 +44,13 @@ fn exercice_sheet() {
       ]),
       max_terms_number: 2,
     ),
-    QuestionsExercice("Repondez auix questions", [
-      types.Question("Az = Bg ?", "oui"),
-      types.Question("Az = Moche ?", "non"),
-      types.Question("Az = Pgm ?", "oui"),
+    QuestionsExercice("Repondre aux questions suivantes", [
+      types.Question("Quel est le théorème de Pythagore ?", "[flemme d'écrire]"),
+      types.Question("Qu'est ce que le temps ?", "En fait [...]"),
+      types.Question(
+        "De le couleur était le cheval blanc d'Henri IV ?",
+        "Blanc, évidemment",
+      ),
     ]),
   ])
 }

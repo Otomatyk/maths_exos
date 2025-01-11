@@ -89,9 +89,11 @@ fn factors_to_string_and_stack(
 }
 
 fn latex(compiled: String, stack: List(StackElement), next_id: Int) -> String {
-  use #(curr, curr_id, parent_order) <- first_or_return_acc(stack, compiled)
+  use #(curr, curr_id, parent_order), stack <- first_or_return_acc(
+    stack,
+    compiled,
+  )
 
-  let stack = list.drop(stack, 1)
   let replace = placeholder(curr_id)
 
   case curr {

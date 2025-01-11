@@ -109,8 +109,9 @@ pub fn true_or_false_first_dregree_exercice(
       multiply(true_factors) |> latex_expr.from() |> math()
 
     #(
-      { true_factors_math }
-        <> " = "
+      "La version factorisée de "
+        <> true_factors_math
+        <> " est "
         <> { developped |> latex_expr.from() |> math() },
       case truthfullness {
         True -> option.None

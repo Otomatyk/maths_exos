@@ -78,7 +78,6 @@ pub fn eq(a: Expr, b: Expr) -> Bool {
 
     Multiplication(factors_a), Multiplication(factors_b) ->
       equal_order_independant(factors_a, factors_b, eq)
-
     _, _ -> False
   }
 }

@@ -44,6 +44,7 @@ fn put_parenthesis_if(s: String, when: Bool) -> String {
   }
 }
 
+// {{3 + x} \\ times {8} \\times -{-10}}
 fn factors_to_string_and_stack(
   factors: expr.Factors,
   next_id: Int,

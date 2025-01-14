@@ -15,7 +15,8 @@
 //// ✅ IX    0 + [...]     -> [...]
 //// X.    a^p * a^q * [...] -> a^{p + q} * [...]
 //// ✅ XI.   a^n * b^n * [...] -> (ab)^n * [...]
-//// 
+//// XII. a/b * c/d          -> ac / bd
+//// XIII. a/b + c/b         -> {a + c} / b 
 
 import expr/expr
 import expr/simplify/addition.{simplify_terms as simplified_term_internal}

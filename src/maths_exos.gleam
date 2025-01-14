@@ -1,6 +1,8 @@
 import exercices/develop
 import exercices/types.{ExerciceSheet, QuestionsExercice}
 
+// import expr/expr
+// import expr/simplify/simplify
 import gleam/io
 import latex/latex_exercice_sheet
 import pdf
